@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipos de Productos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+</head>
+<body class="bg-gray-50">
+    <section class="py-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-4xl font-bold text-center mb-8" data-aos="fade-down">Tipos de Productos que Puedes Agregar</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Producto Ejemplo 1 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden" data-aos="fade-up">
+                    <div class="p-6">
+                        <div class="text-2xl font-bold text-gray-800 mb-2">Electrónicos</div>
+                        <p class="text-gray-600 mb-4">Agrega productos electrónicos como:</p>
+                        <ul class="text-gray-600 list-disc list-inside">
+                            <li>Smartphones</li>
+                            <li>Laptops</li>
+                            <li>Tablets</li>
+                            <li>Accesorios</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Producto Ejemplo 2 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+                    <div class="p-6">
+                        <div class="text-2xl font-bold text-gray-800 mb-2">Ropa y Accesorios</div>
+                        <p class="text-gray-600 mb-4">Incluye artículos de moda como:</p>
+                        <ul class="text-gray-600 list-disc list-inside">
+                            <li>Camisetas</li>
+                            <li>Pantalones</li>
+                            <li>Zapatos</li>
+                            <li>Bolsos</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Producto Ejemplo 3 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+                    <div class="p-6">
+                        <div class="text-2xl font-bold text-gray-800 mb-2">Hogar y Decoración</div>
+                        <p class="text-gray-600 mb-4">Productos para el hogar como:</p>
+                        <ul class="text-gray-600 list-disc list-inside">
+                            <li>Muebles</li>
+                            <li>Lámparas</li>
+                            <li>Decoración</li>
+                            <li>Utensilios</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-12" data-aos="fade-up">
+                <p class="text-lg text-gray-600 mb-6">¡Y muchos más tipos de productos que puedes agregar al sistema!</p>
+                <a href="registro.html" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg inline-block transition duration-300">
+                    Comenzar a Agregar Productos
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+    </script>
+</body>
+</html>
