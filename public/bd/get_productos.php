@@ -14,7 +14,7 @@ if ($conn->connect_error) {
     die(json_encode(["status" => "error", "message" => "Error de conexión: " . $conn->connect_error]));
 }
 // Consulta para obtener los productos
-$sql = "SELECT id, nombre, descripcion, precio, stock, categoria, imagen FROM productos";
+$sql = "SELECT id, nombre, descripcion, precio, stock, categoria FROM productos";
 $result = $conn->query($sql);
 
 $productos = [];

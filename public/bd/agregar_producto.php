@@ -17,7 +17,6 @@ if ($conn->connect_error) {
 
 // Verificar si los datos llegaron correctamente
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Verificar que todos los campos necesarios estén presentes
     if (!isset($_POST['nombre'], $_POST['descripcion'], $_POST['precio'], $_POST['stock'], $_POST['categoria'])) {
         echo json_encode(["error" => "Faltan datos requeridos en el formulario."]);
         exit;
@@ -30,45 +29,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stock = $_POST['stock'];
     $categoria = $_POST['categoria'];
 
-    // Procesar la imagen si se sube
-    $imagenPath = null;
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-        $imagenTmp = $_FILES['imagen']['tmp_name'];
-        $imagenNombre = $_FILES['imagen']['name'];
-        $imagenExtension = pathinfo($imagenNombre, PATHINFO_EXTENSION);
+    // Preparar la consulta SQL para insertar el producto
+    $sql = "INSERT INTO productos (nombre, descripcion, precio, stock, categoria) 
+            VALUES (?, ?, ?, ?, ?)";
 
-        // Validar la extensión de la imagen (por ejemplo, solo imágenes jpg, jpeg, png)
-        $allowedExtensions = ['jpg', 'jpeg', 'png'];
-        if (!in_array(strtolower($imagenExtension), $allowedExtensions)) {
-            echo json_encode(["error" => "Solo se permiten imágenes jpg, jpeg y png."]);
-            exit;
-        }
+    $stmt = $conn->prepare($sql);
 
-        // Definir el directorio donde se almacenará la imagen
-        $uploadDir = 'uploads/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);  // Crear el directorio si no existe
-        }
-
-        
+    if (!$stmt) {
+        echo json_encode(["error" => "Error al preparar la consulta: " . $conn->error]);
+        exit;
     }
 
-    // Preparar la consulta SQL para insertar el producto en la base de datos
-    $sql = "INSERT INTO productos (nombre, descripcion, precio, stock, categoria, imagen) 
-            VALUES (?, ?, ?, ?, ?, ?)";
-
-    // Usar sentencias preparadas para evitar SQL Injection
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssdiis", $nombre, $descripcion, $precio, $stock, $categoria, $imagenPath);
+    $stmt->bind_param("ssdis", $nombre, $descripcion, $precio, $stock, $categoria);
 
     // Ejecutar la consulta
     if ($stmt->execute()) {
         echo json_encode(["success" => true, "message" => "Producto agregado correctamente."]);
     } else {
-        echo json_encode(["error" => "Error al agregar el producto."]);
+        echo json_encode(["error" => "Error al agregar el producto: " . $stmt->error]);
     }
 
-    // Cerrar la conexión
     $stmt->close();
     $conn->close();
 } else {
