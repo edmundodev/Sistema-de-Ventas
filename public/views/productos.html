@@ -13,9 +13,14 @@
 </head>
 
 <body class="bg-gray-50">
-    <div class="flex h-screen">
-        <!-- Sidebar mejorado -->
-        <aside class="w-64 bg-white shadow-lg">
+    <div class="flex h-screen relative">
+        <!-- Botón de menú móvil ajustado más a la izquierda -->
+        <button id="menuButton" class="lg:hidden fixed top-4 left-2 z-20 p-2 rounded-lg bg-blue-600 text-white">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Sidebar con clase para responsividad -->
+        <aside id="sidebar" class="fixed lg:relative w-64 bg-white shadow-lg transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out h-full z-10">
             <div class="p-6">
                 <h1 class="text-2xl font-bold text-blue-600">VentasPRO</h1>
             </div>
@@ -30,7 +35,7 @@
                         <a href="#" class="block px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-all">
                             <i class="fas fa-users mr-2"></i> Usuarios
                         </a>
-                        <a href="#" class="block px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-all">
+                        <a href="Reportes.html" class="block px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-all">
                             <i class="fas fa-chart-bar mr-2"></i> Reportes
                         </a>
                     </div>
@@ -50,20 +55,18 @@
             </nav>
         </aside>
 
-        <!-- Contenido principal -->
-        <main class="flex-1 overflow-y-auto bg-gray-50 p-8">
+        <!-- Contenido principal con scroll en la tabla -->
+        <main class="flex-1 overflow-y-auto bg-gray-50 p-8 w-full">
             <div class="max-w-7xl mx-auto">
                 <!-- Encabezado -->
                 <div class="flex justify-between items-center mb-8" data-aos="fade-down">
-                    <h1 class="text-3xl font-bold text-gray-800">Gestión de Productos</h1>
+                    <h1 class="text-3xl font-bold text-gray-800 ml-8 lg:ml-0">Gestión de Productos</h1>
                     <button id="openModal"
                         class="flex items-center gap-2 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded transition-all duration-300">
                         <i class="fa-solid fa-plus fa-bounce"></i>
                         <span>Agregar producto</span>
                     </button>
                 </div>
-
-
 
 
                 <!-- Barra de búsqueda mejorada -->
@@ -77,23 +80,24 @@
 
                 <!-- Tabla de productos mejorada -->
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden" data-aos="fade-up" data-aos-delay="100">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="bg-gray-50 text-left">
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">ID
-                                </th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Producto</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Descripción</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Precio</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Stock
-                                </th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Categoría</th>
-                                <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Acciones</th>
+                    <div class="overflow-x-auto max-h-[600px] overflow-y-auto">
+                        <table class="w-full text-center">
+                            <thead>
+                                <tr class="bg-gray-50 text-center">
+                                    <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">ID
+                                    </th>
+                                    <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Producto</th>
+                                    <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Descripción</th>
+                                    <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Precio</th>
+                                    <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Stock
+                                    </th>
+                                    <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Categoría</th>
+                                    <th class="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="productos" class="divide-y divide-gray-200"></tbody>
@@ -101,13 +105,13 @@
                 </div>
             </div>
 
-            <div id="myModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center hidden">
-                <div class="bg-white p-6 rounded-lg w-1/3">
+            <!-- Modal de Agregar Producto -->
+            <div id="myModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center hidden z-50 px-4">
+                <div class="bg-white p-6 rounded-lg w-full max-w-md mx-auto">
                     <h2 class="text-xl font-semibold mb-4">Agregar Producto</h2>
                     <!-- Formulario o contenido del modal -->
                     <form>
-                        <label for="productName" class="block text-sm font-medium text-gray-700">Nombre del
-                            producto</label>
+                        <label for="productName" class="block text-sm font-medium text-gray-700">Nombre del producto</label>
                         <input type="text" id="productName"
                             class="mt-1 p-2 border border-gray-300 rounded w-full mb-4 cursor-default focus:outline-none focus:ring-0"
                             placeholder="Nombre del producto">
@@ -139,14 +143,12 @@
                             <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Guardar</button>
                         </div>
                     </form>
-
                 </div>
             </div>
 
             <!-- Modal de Venta -->
-            <div id="modalVenta"
-                class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center hidden">
-                <div class="bg-white p-6 rounded-lg w-1/3">
+            <div id="modalVenta" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center hidden z-50 px-4">
+                <div class="bg-white p-6 rounded-lg w-full max-w-md mx-auto">
                     <h2 class="text-xl font-semibold mb-4">Vender Producto</h2>
                     <form>
                         <label for="ventaNombre" class="block text-sm font-medium text-gray-700">Nombre del
@@ -182,6 +184,23 @@
 
         </main>
     </div>
+
+    <!-- Agregar este script al final del body -->
+    <script>
+        document.getElementById('menuButton').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Cerrar menú al hacer clic en un enlace (opcional)
+        document.querySelectorAll('aside a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 1024) { // 1024px es el breakpoint de lg en Tailwind
+                    document.getElementById('sidebar').classList.add('-translate-x-full');
+                }
+            });
+        });
+    </script>
 </body>
 <script>
     function cargarProductos() {
