@@ -1,60 +1,221 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar sesión</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+        :root {
+            --primary: #2563eb;
+            --surface: #ffffff;
+            --background: #f3f4f6;
+            --text: #1f2937;
+            --accent: #3b82f6;
+        }
+
         body {
-            background-color: #f8f9fa;
+            background-color: var(--background);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             margin: 0;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         .login-container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: var(--surface);
+            padding: 2.5rem;
+            border-radius: 20px;
             width: 100%;
             max-width: 400px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            position: relative;
         }
+
+        .login-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.15);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h3 {
+            font-size: 1.875rem;
+            color: var(--text);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            background-color: var(--background);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            transition: all 0.3s ease;
+            color: var(--text);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            background-color: var(--surface);
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            z-index: 10;
+            transition: color 0.3s ease;
+        }
+
+        .form-control {
+            padding-left: 2.75rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border: none;
+            padding: 0.875rem;
+            border-radius: 12px;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: linear-gradient(rgba(255, 255, 255, 0.2), transparent);
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .btn-primary:hover::after {
+            transform: translateY(0);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.3);
+        }
+
+        .links-container {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .links-container a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .links-container a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .links-container a:hover::after {
+            transform: scaleX(1);
+        }
+
+        .form-floating > label {
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        .input-group .btn {
+            border-radius: 0 12px 12px 0;
+            background-color: var(--background);
+            border: none;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .input-group .btn:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-container > * {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .login-container > *:nth-child(2) { animation-delay: 0.1s; }
+        .login-container > *:nth-child(3) { animation-delay: 0.2s; }
     </style>
 </head>
 
 <body>
     <div class="login-container">
-        <h3 class="text-center">Iniciar sesión</h3>
+        <div class="login-header">
+            <h3>Bienvenido</h3>
+            <p class="text-muted">Ingresa a tu cuenta</p>
+        </div>
         <form id="login-form">
-            <div class="mb-3">
-                <label for="email" class="form-label">Correo electrónico</label>
-                <input type="email" class="form-control" id="email" name="email" required>
+            <div class="input-group mb-3">
+                <i class="fas fa-envelope input-icon"></i>
+                <input type="email" class="form-control" id="email" name="email" 
+                       placeholder="Correo electrónico" required>
             </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Contraseña</label>
-                <div class="input-group">
-                    <input type="password" class="form-control" id="password" name="password" required>
-                    <button type="button" class="btn btn-outline-secondary" onclick="mostrarPassword(this)">
-                        <i class="fa-solid fa-eye"></i>
-                    </button>
-                </div>
+            <div class="input-group mb-4">
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" class="form-control" id="password" name="password" 
+                       placeholder="Contraseña" required>
+                <button type="button" class="btn" onclick="mostrarPassword(this)">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-sign-in-alt me-2"></i>Iniciar sesión
+            </button>
 
+            <div class="links-container">
+                <p class="mb-3">¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a></p>
+                <a href="index.html"><i class="fas fa-home me-2"></i>Volver al inicio</a>
+            </div>
         </form>
-        <p class="text-center mt-3">¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a></p>
-        <p class="text-center mt-3"><a href="index.html">Inicio</a></p>
     </div>
 
     <script>
@@ -74,6 +235,8 @@
                 icon.classList.add("fa-eye");
             }
         }
+
+
 
 
 
@@ -132,5 +295,4 @@
         }
     </script>
 </body>
-
 </html>
