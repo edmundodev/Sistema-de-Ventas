@@ -271,10 +271,10 @@
                 }
 
                 if (password === confirm) {
-                    $("#match-message").text("✅ Las contraseñas coinciden").removeClass("text-danger").addClass("text-success");
+                    $("#match-message").text("✅").removeClass("text-danger").addClass("text-success");
                     $("#confirm_password").removeClass("is-invalid").addClass("is-valid");
                 } else {
-                    $("#match-message").text("❌ Las contraseñas no coinciden").removeClass("text-success").addClass("text-danger");
+                    $("#match-message").text("❌").removeClass("text-success").addClass("text-danger");
                     $("#confirm_password").removeClass("is-valid").addClass("is-invalid");
                 }
             });

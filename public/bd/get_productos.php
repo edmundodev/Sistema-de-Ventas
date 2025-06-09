@@ -7,22 +7,27 @@ $user = "root";
 $pass = "";
 $db = "usuarios";
 
-// Conexión a la base de datos
 $conn = new mysqli($host, $user, $pass, $db);
-
 if ($conn->connect_error) {
     die(json_encode(["status" => "error", "message" => "Error de conexión: " . $conn->connect_error]));
 }
-// Consulta para obtener los productos
-$sql = "SELECT id, nombre, descripcion, precio, stock, categoria FROM productos";
-$result = $conn->query($sql);
+
+if (!isset($_SESSION['usuario_id'])) {
+    echo json_encode(["status" => "error", "message" => "Usuario no autenticado"]);
+    exit;
+}
+
+$usuario_id = $_SESSION['usuario_id'];
+
+$sql = "SELECT id, nombre, descripcion, precio, stock, categoria FROM productos WHERE usuario_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $usuario_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
 $productos = [];
-
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $productos[] = $row;
-    }
+while ($row = $result->fetch_assoc()) {
+    $productos[] = $row;
 }
 
 echo json_encode($productos);
