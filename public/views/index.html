@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,14 +15,17 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .hover-scale {
             transition: transform 0.3s ease;
         }
+
         .hover-scale:hover {
             transform: scale(1.05);
         }
     </style>
 </head>
+
 <body class="bg-gray-50" x-data="{ isOpen: false }" x-init="AOS.init()">
     <nav class="fixed w-full bg-white shadow-lg z-50">
         <div class="container px-6 py-4 mx-auto">
@@ -30,27 +34,41 @@
                     <a href="#" class="text-2xl font-bold gradient-text">VentasPRO</a>
                     <button @click="isOpen = !isOpen" class="lg:hidden">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path x-show="!isOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                            <path x-show="isOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            <path x-show="!isOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                            <path x-show="isOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
 
-                <div x-cloak :class="[isOpen ? 'translate-x-0 opacity-100 ' : 'opacity-0 -translate-x-full']" class="absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 bg-white md:bg-transparent md:relative md:w-auto md:opacity-100 md:translate-x-0 md:flex md:items-center">
+                <div x-cloak :class="[isOpen ? 'translate-x-0 opacity-100 ' : 'opacity-0 -translate-x-full']"
+                    class="absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 bg-white md:bg-transparent md:relative md:w-auto md:opacity-100 md:translate-x-0 md:flex md:items-center">
                     <div class="flex flex-col md:flex-row md:mx-6">
                         <a class="my-2 text-gray-700 hover:text-blue-500 md:mx-4 md:my-0" href="#">Inicio</a>
-                        <a class="my-2 text-gray-700 hover:text-blue-500 md:mx-4 md:my-0" href="newProductos.html">Productos</a>
-                        <a class="my-2 text-gray-700 hover:text-blue-500 md:mx-4 md:my-0" href="reportes.html">Reportes</a>
-                        <a class="my-2 text-gray-700 transition-colors duration-300 transform hover:text-blue-500 lg:mx-4 lg:my-0" href="contacto.html">Contacto</a>
+                        <a class="my-2 text-gray-700 hover:text-blue-500 md:mx-4 md:my-0"
+                            href="newProductos.html">Productos</a>
+                        <a class="my-2 text-gray-700 hover:text-blue-500 md:mx-4 md:my-0"
+                            href="reportes.html">Reportes</a>
+                        <a class="my-2 text-gray-700 transition-colors duration-300 transform hover:text-blue-500 lg:mx-4 lg:my-0"
+                            href="contacto.html">Contacto</a>
                     </div>
                 </div>
 
-                <div x-show="isOpen" class="absolute left-0 w-full lg:static lg:w-auto lg:opacity-100 lg:flex lg:items-center mt-2 lg:mt-0 bg-white lg:bg-transparent border-t lg:border-none" @click.away="isOpen = false" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0">
+                <div x-show="isOpen"
+                    class="absolute left-0 w-full lg:static lg:w-auto lg:opacity-100 lg:flex lg:items-center mt-2 lg:mt-0 bg-white lg:bg-transparent border-t lg:border-none"
+                    @click.away="isOpen = false" x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 transform -translate-y-2"
+                    x-transition:enter-end="opacity-100 transform translate-y-0">
                     <div class="flex flex-col lg:flex-row lg:mx-6">
-                        <a class="my-2 text-gray-700 transition-colors duration-300 transform hover:text-blue-500 lg:mx-4 lg:my-0" href="#">Inicio</a>
-                        <a class="my-2 text-gray-700 transition-colors duration-300 transform hover:text-blue-500 lg:mx-4 lg:my-0" href="productos.html">Productos</a>
-                        <a class="my-2 text-gray-700 transition-colors duration-300 transform hover:text-blue-500 lg:mx-4 lg:my-0" href="reportes.html">Reportes</a>
-                        <a class="my-2 text-gray-700 transition-colors duration-300 transform hover:text-blue-500 lg:mx-4 lg:my-0" href="contacto.html">Contacto</a>
+                        <a class="my-2 text-gray-700 transition-colors duration-300 transform hover:text-blue-500 lg:mx-4 lg:my-0"
+                            href="#">Inicio</a>
+                        <a class="my-2 text-gray-700 transition-colors duration-300 transform hover:text-blue-500 lg:mx-4 lg:my-0"
+                            href="productos.html">Productos</a>
+                        <a class="my-2 text-gray-700 transition-colors duration-300 transform hover:text-blue-500 lg:mx-4 lg:my-0"
+                            href="reportes.html">Reportes</a>
+                        <a class="my-2 text-gray-700 transition-colors duration-300 transform hover:text-blue-500 lg:mx-4 lg:my-0"
+                            href="contacto.html">Contacto</a>
                     </div>
                 </div>
             </div>
@@ -67,16 +85,19 @@
                             Sistema de Ventas
                             <span class="gradient-text">Inteligente</span>
                         </h1>
-                        <p class="text-xl text-gray-600 mb-8">Automatiza tu negocio con nuestra solución integral de ventas. Gestiona inventario, clientes y reportes en tiempo real.</p>
+                        <p class="text-xl text-gray-600 mb-8">Automatiza tu negocio con nuestra solución integral de
+                            ventas. Gestiona inventario, clientes y reportes en tiempo real.</p>
                         <div class="flex space-x-4">
-                          
-                            <button class="hover-scale px-8 py-4 text-lg font-medium text-blue-600 border-2 border-blue-600 rounded-lg hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300">
+
+                            <button
+                                class="hover-scale px-8 py-4 text-lg font-medium text-blue-600 border-2 border-blue-600 rounded-lg hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300">
                                 <a href="registro.html">Comenzar</a>
                             </button>
                         </div>
                     </div>
                     <div class="w-full lg:w-1/2 mt-12 lg:mt-0" data-aos="fade-left" data-aos-duration="1000">
-                        <img src="https://merakiui.com/images/components/Catalogue-pana.svg" alt="Dashboard" class="w-full h-auto hover-scale">
+                        <img src="https://merakiui.com/images/components/Catalogue-pana.svg" alt="Dashboard"
+                            class="w-full h-auto hover-scale">
                     </div>
                 </div>
             </div>
@@ -85,7 +106,8 @@
         <!-- Features Section -->
         <section class="py-20 bg-gray-100">
             <div class="container px-6 mx-auto">
-                <h2 class="text-3xl font-bold text-center text-gray-800 mb-16" data-aos="fade-up">Características Principales</h2>
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-16" data-aos="fade-up">Características
+                    Principales</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     <!-- Feature 1 -->
                     <div class="bg-white rounded-lg p-8 shadow-lg hover-scale" data-aos="fade-up" data-aos-delay="100">
@@ -97,7 +119,8 @@
                     <div class="bg-white rounded-lg p-8 shadow-lg hover-scale" data-aos="fade-up" data-aos-delay="200">
                         <div class="text-4xl mb-4">📊</div>
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Reportes en Tiempo Real</h3>
-                        <p class="text-gray-600">Analítica avanzada y reportes personalizados para tomar mejores decisiones.</p>
+                        <p class="text-gray-600">Analítica avanzada y reportes personalizados para tomar mejores
+                            decisiones.</p>
                     </div>
                     <!-- Feature 3 -->
                     <div class="bg-white rounded-lg p-8 shadow-lg hover-scale" data-aos="fade-up" data-aos-delay="300">
@@ -116,172 +139,327 @@
         </section>
     </main>
 
-            <!-- Estadísticas Section -->
-            <section class="py-20 bg-blue-600">
-                <div class="container px-6 mx-auto">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-                        <div class="p-4" data-aos="fade-up" data-aos-delay="100">
-                            <h2 class="text-4xl font-bold text-white mb-2">2,000+</h2>
-                            <p class="text-blue-100">Clientes Activos</p>
+    <!-- Estadísticas Section -->
+    <section class="py-20 bg-blue-600">
+        <div class="container px-6 mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+                <div class="p-4" data-aos="fade-up" data-aos-delay="100">
+                    <h2 class="text-4xl font-bold text-white mb-2">2,000+</h2>
+                    <p class="text-blue-100">Clientes Activos</p>
+                </div>
+                <div class="p-4" data-aos="fade-up" data-aos-delay="200">
+                    <h2 class="text-4xl font-bold text-white mb-2">15M+</h2>
+                    <p class="text-blue-100">Ventas Procesadas</p>
+                </div>
+                <div class="p-4" data-aos="fade-up" data-aos-delay="300">
+                    <h2 class="text-4xl font-bold text-white mb-2">99.9%</h2>
+                    <p class="text-blue-100">Tiempo Activo</p>
+                </div>
+                <div class="p-4" data-aos="fade-up" data-aos-delay="400">
+                    <h2 class="text-4xl font-bold text-white mb-2">24/7</h2>
+                    <p class="text-blue-100">Soporte Técnico</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonios Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="container px-6 mx-auto">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-16" data-aos="fade-up">Lo que dicen nuestros
+                clientes</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-lg hover-scale" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center mb-4">
+                        <div
+                            class="h-12 w-12 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl font-bold">
+                            M</div>
+                        <div class="ml-4">
+                            <h4 class="text-xl font-semibold text-gray-800">María González</h4>
+                            <p class="text-gray-600">Dueña de Tienda</p>
                         </div>
-                        <div class="p-4" data-aos="fade-up" data-aos-delay="200">
-                            <h2 class="text-4xl font-bold text-white mb-2">15M+</h2>
-                            <p class="text-blue-100">Ventas Procesadas</p>
+                    </div>
+                    <p class="text-gray-600">"Este sistema ha revolucionado la manera en que manejo mi negocio. La
+                        gestión de inventario es mucho más eficiente."</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg hover-scale" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center mb-4">
+                        <div
+                            class="h-12 w-12 rounded-full bg-green-500 flex items-center justify-center text-white text-xl font-bold">
+                            J</div>
+                        <div class="ml-4">
+                            <h4 class="text-xl font-semibold text-gray-800">Juan Pérez</h4>
+                            <p class="text-gray-600">Gerente Comercial</p>
                         </div>
-                        <div class="p-4" data-aos="fade-up" data-aos-delay="300">
-                            <h2 class="text-4xl font-bold text-white mb-2">99.9%</h2>
-                            <p class="text-blue-100">Tiempo Activo</p>
+                    </div>
+                    <p class="text-gray-600">"Los reportes en tiempo real me permiten tomar decisiones informadas. El
+                        soporte técnico es excelente."</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg hover-scale" data-aos="fade-up" data-aos-delay="300">
+                    <div class="flex items-center mb-4">
+                        <div
+                            class="h-12 w-12 rounded-full bg-purple-500 flex items-center justify-center text-white text-xl font-bold">
+                            A</div>
+                        <div class="ml-4">
+                            <h4 class="text-xl font-semibold text-gray-800">Ana Martínez</h4>
+                            <p class="text-gray-600">Emprendedora</p>
                         </div>
-                        <div class="p-4" data-aos="fade-up" data-aos-delay="400">
-                            <h2 class="text-4xl font-bold text-white mb-2">24/7</h2>
-                            <p class="text-blue-100">Soporte Técnico</p>
+                    </div>
+                    <p class="text-gray-600">"Increíblemente fácil de usar. Ha ayudado a mi negocio a crecer de manera
+                        significativa."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Compra Paquete Básico -->
+    <div id="modalPlan"
+        class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 overflow-y-auto p-4">
+        <div class="bg-white w-full max-w-4xl p-10 rounded-2xl shadow-2xl relative">
+            <button onclick="cerrarModal()"
+                class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+
+            <div class="text-center mb-8">
+                <h2 id="modalPlanTitulo" class="text-3xl font-bold text-gray-800 mb-2"></h2>
+                <p id="modalPlanPrecio" class="text-xl text-blue-600 font-semibold"></p>
+            </div>
+
+            <form id="formSuscripcion" class="space-y-6">
+                <input type="hidden" name="plan_id" id="plan_id_input">
+
+                <!-- Información Personal -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-700">Información Personal</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                            <input type="text" name="nombre" required
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Apellidos</label>
+                            <input type="text" name="apellidos" required
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" name="email" required
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                            <input type="tel" name="telefono" required
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
                 </div>
-            </section>
-    
-            <!-- Testimonios Section -->
-            <section class="py-20 bg-gray-50">
-                <div class="container px-6 mx-auto">
-                    <h2 class="text-3xl font-bold text-center text-gray-800 mb-16" data-aos="fade-up">Lo que dicen nuestros clientes</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div class="bg-white p-8 rounded-lg shadow-lg hover-scale" data-aos="fade-up" data-aos-delay="100">
-                            <div class="flex items-center mb-4">
-                                <div class="h-12 w-12 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl font-bold">M</div>
-                                <div class="ml-4">
-                                    <h4 class="text-xl font-semibold text-gray-800">María González</h4>
-                                    <p class="text-gray-600">Dueña de Tienda</p>
-                                </div>
+
+                <!-- Método de Pago -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-700">Método de Pago</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Opción Tarjeta -->
+                        <label
+                            class="relative border rounded-lg p-4 cursor-pointer hover:border-blue-500 transition-colors">
+                            <input type="radio" name="metodo_pago" value="tarjeta" class="absolute opacity-0">
+                            <div class="text-center">
+                                <svg class="w-8 h-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" />
+                                </svg>
+                                <span class="text-sm font-medium">Tarjeta</span>
                             </div>
-                            <p class="text-gray-600">"Este sistema ha revolucionado la manera en que manejo mi negocio. La gestión de inventario es mucho más eficiente."</p>
+                        </label>
+
+                        <!-- Opción Transferencia -->
+                        <label
+                            class="relative border rounded-lg p-4 cursor-pointer hover:border-blue-500 transition-colors">
+                            <input type="radio" name="metodo_pago" value="transferencia" class="absolute opacity-0">
+                            <div class="text-center">
+                                <svg class="w-8 h-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M4 10h3v7H4v-7zm6.5-7l-3.5 7h14l-3.5-7h-7zm8.5 7v7h-3v-7h3zM3 19h18v2H3v-2z" />
+                                </svg>
+                                <span class="text-sm font-medium">Transferencia</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Campos Tarjeta -->
+                <div id="campos-tarjeta" class="space-y-4 hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Número de Tarjeta</label>
+                            <input type="text" name="numero_tarjeta" placeholder="1234 5678 9012 3456"
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
                         </div>
-                        <div class="bg-white p-8 rounded-lg shadow-lg hover-scale" data-aos="fade-up" data-aos-delay="200">
-                            <div class="flex items-center mb-4">
-                                <div class="h-12 w-12 rounded-full bg-green-500 flex items-center justify-center text-white text-xl font-bold">J</div>
-                                <div class="ml-4">
-                                    <h4 class="text-xl font-semibold text-gray-800">Juan Pérez</h4>
-                                    <p class="text-gray-600">Gerente Comercial</p>
-                                </div>
-                            </div>
-                            <p class="text-gray-600">"Los reportes en tiempo real me permiten tomar decisiones informadas. El soporte técnico es excelente."</p>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Expiración</label>
+                            <input type="text" name="fecha_expiracion" placeholder="MM/AA"
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
                         </div>
-                        <div class="bg-white p-8 rounded-lg shadow-lg hover-scale" data-aos="fade-up" data-aos-delay="300">
-                            <div class="flex items-center mb-4">
-                                <div class="h-12 w-12 rounded-full bg-purple-500 flex items-center justify-center text-white text-xl font-bold">A</div>
-                                <div class="ml-4">
-                                    <h4 class="text-xl font-semibold text-gray-800">Ana Martínez</h4>
-                                    <p class="text-gray-600">Emprendedora</p>
-                                </div>
-                            </div>
-                            <p class="text-gray-600">"Increíblemente fácil de usar. Ha ayudado a mi negocio a crecer de manera significativa."</p>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">CVV</label>
+                            <input type="text" name="cvv" placeholder="123"
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
                 </div>
-            </section>
-    
-            <!-- Planes y Precios Section -->
-            <section class="py-20 bg-white">
-                <div class="container px-6 mx-auto">
-                    <h2 class="text-3xl font-bold text-center text-gray-800 mb-16" data-aos="fade-up">Planes y Precios</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <!-- Plan Básico -->
-                        <div class="bg-white p-8 rounded-lg shadow-lg border hover-scale" data-aos="fade-up" data-aos-delay="100">
-                            <h3 class="text-2xl font-bold text-gray-800 mb-4">Básico</h3>
-                            <p class="text-4xl font-bold text-blue-600 mb-6">$29<span class="text-gray-500 text-lg font-normal">/mes</span></p>
-                            <ul class="space-y-3 mb-8">
-                                <li class="flex items-center text-gray-600">
-                                    <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    Hasta 1,000 productos
-                                </li>
-                                <li class="flex items-center text-gray-600">
-                                    <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    2 usuarios
-                                </li>
-                                <li class="flex items-center text-gray-600">
-                                    <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    Reportes básicos
-                                </li>
-                            </ul>
-                            <button class="w-full py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                                <a href="registro.html">Comenzar Ahora</a>
-                            </button>
-                        </div>
-                        <!-- Plan Pro -->
-                        <div class="bg-blue-600 p-8 rounded-lg shadow-xl transform scale-105 hover-scale" data-aos="fade-up" data-aos-delay="200">
-                            <h3 class="text-2xl font-bold text-white mb-4">Pro</h3>
-                            <p class="text-4xl font-bold text-white mb-6">$59<span class="text-blue-200 text-lg font-normal">/mes</span></p>
-                            <ul class="space-y-3 mb-8">
-                                <li class="flex items-center text-white">
-                                    <svg class="w-5 h-5 text-blue-200 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    Hasta 10,000 productos
-                                </li>
-                                <li class="flex items-center text-white">
-                                    <svg class="w-5 h-5 text-blue-200 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    5 usuarios
-                                </li>
-                                <li class="flex items-center text-white">
-                                    <svg class="w-5 h-5 text-blue-200 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    Reportes avanzados
-                                </li>
-                            </ul>
-                            <button class="w-full py-3 text-blue-600 bg-white rounded-lg hover:bg-gray-100 transition-colors">
-                                <a href="registro.html">Comenzar Ahora</a>
-                            </button>
-                        </div>
-                        <!-- Plan Enterprise -->
-                        <div class="bg-white p-8 rounded-lg shadow-lg border hover-scale" data-aos="fade-up" data-aos-delay="300">
-                            <h3 class="text-2xl font-bold text-gray-800 mb-4">Enterprise</h3>
-                            <p class="text-4xl font-bold text-blue-600 mb-6">$99<span class="text-gray-500 text-lg font-normal">/mes</span></p>
-                            <ul class="space-y-3 mb-8">
-                                <li class="flex items-center text-gray-600">
-                                    <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    Productos ilimitados
-                                </li>
-                                <li class="flex items-center text-gray-600">
-                                    <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    Usuarios ilimitados
-                                </li>
-                                <li class="flex items-center text-gray-600">
-                                    <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    API personalizada
-                                </li>
-                            </ul>
-                            <button class="w-full py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                                <a href="registro.html">Contactar Ventas</a>
-                            </button>
-                        </div>
-                    </div>
+
+                <!-- Info Transferencia -->
+                <div id="info-transferencia" class="bg-gray-100 p-4 rounded-lg space-y-2 hidden">
+                    <p class="text-sm"><strong>Beneficiario:</strong> Brayan Edmundo Perez Sanchez</p>
+                    <p class="text-sm"><strong>Tipo de Banco:</strong> STP</p>
+                    <p class="text-sm"><strong>Número de Transferencia:</strong> 9872654653763487</p>
                 </div>
-            </section>
-    
-            <!-- CTA Section -->
-            <section class="py-20 bg-gradient-to-r from-blue-600 to-blue-800">
-                <div class="container px-6 mx-auto text-center">
-                    <h2 class="text-3xl font-bold text-white mb-8" data-aos="fade-up">¿Listo para transformar tu negocio?</h2>
-                    <p class="text-xl text-blue-100 mb-8" data-aos="fade-up" data-aos-delay="100">Únete a miles de empresas que ya están optimizando sus ventas</p>
-                    <button class="px-8 py-4 bg-white text-blue-600 rounded-lg font-bold hover:bg-blue-50 transition-colors hover-scale" data-aos="fade-up" data-aos-delay="200">
-                        <a href="registro.html">Comenzar Prueba Gratuita</a>
+
+                <button type="submit"
+                    class="w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+                    Confirmar Compra
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Planes y Precios Section -->
+    <section class="py-20 bg-white">
+        <div class="container px-6 mx-auto">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-16" data-aos="fade-up">Planes y Precios</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Plan Básico -->
+                <div class="bg-white p-8 rounded-lg shadow-lg border hover-scale" data-aos="fade-up"
+                    data-aos-delay="100">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Básico</h3>
+                    <p class="text-4xl font-bold text-blue-600 mb-6">$10.00<span
+                            class="text-gray-500 text-lg font-normal">/mes</span></p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center text-gray-600">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Hasta 1,000 productos
+                        </li>
+                        <li class="flex items-center text-gray-600">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            2 usuarios
+                        </li>
+                        <li class="flex items-center text-gray-600">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Reportes básicos
+                        </li>
+                    </ul>
+                    <button onclick="abrirModal(1, 'Básico', 29)"
+                        class="w-full py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                        Comenzar Ahora
+                    </button>
+
+                </div>
+                <!-- Plan Pro -->
+                <div class="bg-blue-600 p-8 rounded-lg shadow-xl transform scale-105 hover-scale" data-aos="fade-up"
+                    data-aos-delay="200">
+                    <h3 class="text-2xl font-bold text-white mb-4">Pro</h3>
+                    <p class="text-4xl font-bold text-white mb-6">$59<span
+                            class="text-blue-200 text-lg font-normal">/mes</span></p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center text-white">
+                            <svg class="w-5 h-5 text-blue-200 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Hasta 10,000 productos
+                        </li>
+                        <li class="flex items-center text-white">
+                            <svg class="w-5 h-5 text-blue-200 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            5 usuarios
+                        </li>
+                        <li class="flex items-center text-white">
+                            <svg class="w-5 h-5 text-blue-200 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Reportes avanzados
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 text-blue-600 bg-white rounded-lg hover:bg-gray-100 transition-colors">
+                        <a href="registro.html">Comenzar Ahora</a>
                     </button>
                 </div>
-            </section>
+                <!-- Plan Enterprise -->
+                <div class="bg-white p-8 rounded-lg shadow-lg border hover-scale" data-aos="fade-up"
+                    data-aos-delay="300">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Enterprise</h3>
+                    <p class="text-4xl font-bold text-blue-600 mb-6">$99<span
+                            class="text-gray-500 text-lg font-normal">/mes</span></p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center text-gray-600">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Productos ilimitados
+                        </li>
+                        <li class="flex items-center text-gray-600">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Usuarios ilimitados
+                        </li>
+                        <li class="flex items-center text-gray-600">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            API personalizada
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                        <a href="registro.html">Contactar Ventas</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-gradient-to-r from-blue-600 to-blue-800">
+        <div class="container px-6 mx-auto text-center">
+            <h2 class="text-3xl font-bold text-white mb-8" data-aos="fade-up">¿Listo para transformar tu negocio?</h2>
+            <p class="text-xl text-blue-100 mb-8" data-aos="fade-up" data-aos-delay="100">Únete a miles de empresas que
+                ya están optimizando sus ventas</p>
+            <button
+                class="px-8 py-4 bg-white text-blue-600 rounded-lg font-bold hover:bg-blue-50 transition-colors hover-scale"
+                data-aos="fade-up" data-aos-delay="200">
+                <a href="registro.html">Comenzar Prueba Gratuita</a>
+            </button>
+        </div>
+    </section>
 
     <footer class="bg-gray-900 text-white py-12">
         <div class="container px-6 mx-auto">
@@ -293,7 +471,8 @@
                 <div class="space-y-4">
                     <h4 class="text-lg font-semibold">Producto</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Características</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Características</a>
+                        </li>
                         <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Precios</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Demo</a></li>
                     </ul>
@@ -320,14 +499,7 @@
         </div>
     </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            AOS.init({
-                duration: 800,
-                easing: 'ease-in-out',
-                once: true
-            });
-        });
-    </script>
+    <script src="../js/modales_ventas.js"></script>
 </body>
-</html>y
+
+</html>
