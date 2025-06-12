@@ -24,13 +24,55 @@ document.querySelectorAll('input[name="metodo_pago"]').forEach(radio => {
     });
 });
 
+// Función para abrir modal con datos dinámicos
+function abrirModal(planId, nombrePlan, precio) {
+    document.getElementById('modalPlan').classList.remove('hidden');
+    document.getElementById('modalPlanTitulo').innerText = `Plan ${nombrePlan}`;
+    document.getElementById('modalPlanPrecio').innerText = `Precio: $${precio} / mes`;
+    document.getElementById('plan_id_input').value = planId;
 
-// Modales y cierre de modal de plan basico
-document.addEventListener('DOMContentLoaded', (event) => {
-    AOS.init({
-        duration: 800,
-        easing: 'ease-in-out',
-        once: true
+    // Opcional: resetear formulario y estados de pago al abrir modal
+    const form = document.getElementById('formSuscripcion');
+    form.reset();
+    document.getElementById('campos-tarjeta').classList.add('hidden');
+    document.getElementById('info-transferencia').classList.add('hidden');
+}
+
+function cerrarModal() {
+    document.getElementById('modalPlan').classList.add('hidden');
+}
+
+
+
+
+// JS  para la compra de un plan basico 
+document.addEventListener('DOMContentLoaded', () => {
+    AOS.init({ duration: 800, easing: 'ease-in-out', once: true });
+
+    // Envío del formulario
+    document.getElementById('formSuscripcion').addEventListener('submit', async e => {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+
+        try {
+            const res = await fetch('../bd/procesar_pago.php', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+
+            if (data.status === 'success') {
+                alert('✅ Compra realizada con éxito');
+                cerrarModal();
+                form.reset();
+                location.reload();
+            } else {
+                alert('❌ Error: ' + data.message);
+            }
+        } catch (error) {
+            alert('❌ Error de red o servidor');
+        }
     });
 });
 
@@ -39,6 +81,10 @@ function abrirModal(planId, nombrePlan, precio) {
     document.getElementById('modalPlanTitulo').innerText = `Plan ${nombrePlan}`;
     document.getElementById('modalPlanPrecio').innerText = `Precio: $${precio} / mes`;
     document.getElementById('plan_id_input').value = planId;
+
+    // Reset formulario
+    const form = document.getElementById('formSuscripcion');
+    form.reset();
 }
 
 function cerrarModal() {

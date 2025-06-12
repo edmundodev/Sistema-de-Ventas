@@ -27,4 +27,6 @@ if (isset($_GET['id'])) {
     $resultado = $stmt->get_result();
     echo json_encode($resultado->fetch_assoc());
 }
+
+
 ?>
