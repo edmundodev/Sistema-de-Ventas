@@ -14,25 +14,22 @@
 <body class="bg-gradient-to-br from-pink-50 to-purple-50">
     <!-- Navbar superior -->
     <nav class="bg-gradient-to-r from-pink-500 to-purple-500 text-white py-4 px-6 shadow-lg">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold">VentasPRO</h1>
-            <div class="flex items-center space-x-6">
-                <a href="#" class="hover:text-pink-200 transition-colors"><i class="fas fa-box mr-2"></i>Productos</a>
-                <a href="#" class="hover:text-pink-200 transition-colors"><i class="fas fa-users mr-2"></i>Usuarios</a>
-                <a href="Reportes.html" class="hover:text-pink-200 transition-colors"><i class="fas fa-chart-bar mr-2"></i>Reportes</a>
-                <a href="#" class="hover:text-pink-200 transition-colors"><i class="fas fa-cog mr-2"></i>Ajustes</a>
-                <button onclick="logout()" class="text-red-300 hover:text-red-100 transition-colors"><i class="fas fa-sign-out-alt mr-2"></i>Cerrar sesión</button>
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <h1 class="text-2xl font-bold mb-4 md:mb-0">VentasPRO</h1>
+            <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
+                <a href="componentes.html" class="hover:text-pink-200 transition-colors w-full md:w-auto text-center"><i class="fas fa-box mr-2"></i>Inicio</a>
+                <button onclick="logout()" class="text-red-300 hover:text-red-100 transition-colors w-full md:w-auto text-center"><i class="fas fa-sign-out-alt mr-2"></i>Cerrar sesión</button>
             </div>
         </div>
     </nav>
 
     <!-- Contenido principal -->
-    <main class="p-8">
+    <main class="p-4 md:p-8">
         <div class="max-w-7xl mx-auto">
             <!-- Encabezado -->
-            <div class="flex justify-between items-center mb-8">
-                <h1 class="text-3xl font-bold text-pink-900">Productos</h1>
-                <button id="openModal" class="flex items-center gap-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 space-y-4 md:space-y-0">
+                <h1 class="text-2xl md:text-3xl font-bold text-pink-900">Productos</h1>
+                <button id="openModal" class="w-full md:w-auto flex items-center justify-center gap-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
                     <i class="fas fa-plus"></i>
                     <span>Agregar Producto</span>
                 </button>
@@ -41,24 +38,24 @@
             <!-- Barra de búsqueda moderna -->
             <div class="mb-8">
                 <div class="relative">
-                    <input type="text" placeholder="Buscar productos..." class="w-full px-6 py-4 pl-14 rounded-xl bg-white shadow-sm border-2 border-pink-100 focus:border-pink-300 focus:ring focus:ring-pink-200 focus:ring-opacity-50 transition-all">
-                    <i class="fas fa-search absolute left-5 top-5 text-pink-400"></i>
+                    <input type="text" placeholder="Buscar productos..." class="w-full px-4 md:px-6 py-3 md:py-4 pl-12 md:pl-14 rounded-xl bg-white shadow-sm border-2 border-pink-100 focus:border-pink-300 focus:ring focus:ring-pink-200 focus:ring-opacity-50 transition-all">
+                    <i class="fas fa-search absolute left-4 md:left-5 top-4 md:top-5 text-pink-400"></i>
                 </div>
             </div>
 
-            <!-- Tabla moderna -->
+            <!-- Tabla moderna con scroll horizontal en móvil -->
             <div class="bg-white rounded-xl shadow-sm border border-pink-100 overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="w-full">
+                    <table class="w-full min-w-[800px]">
                         <thead>
                             <tr class="bg-gradient-to-r from-pink-50 to-purple-50">
-                                <th class="px-6 py-4 text-left text-sm font-semibold text-pink-900">ID</th>
-                                <th class="px-6 py-4 text-left text-sm font-semibold text-pink-900">Producto</th>
-                                <th class="px-6 py-4 text-left text-sm font-semibold text-pink-900">Descripción</th>
-                                <th class="px-6 py-4 text-left text-sm font-semibold text-pink-900">Precio</th>
-                                <th class="px-6 py-4 text-left text-sm font-semibold text-pink-900">Stock</th>
-                                <th class="px-6 py-4 text-left text-sm font-semibold text-pink-900">Categoría</th>
-                                <th class="px-6 py-4 text-left text-sm font-semibold text-pink-900">Acciones</th>
+                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-pink-900">ID</th>
+                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-pink-900">Producto</th>
+                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-pink-900">Descripción</th>
+                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-pink-900">Precio</th>
+                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-pink-900">Stock</th>
+                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-pink-900">Categoría</th>
+                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-pink-900">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="productos" class="divide-y divide-pink-100"></tbody>
@@ -66,11 +63,11 @@
                 </div>
             </div>
 
-            <!-- Modales con tonos rosados -->
-            <div id="myModal" class="fixed inset-0 bg-indigo-900 bg-opacity-40 backdrop-blur-sm flex justify-center items-center hidden z-50">
-                <div class="bg-white p-8 rounded-2xl w-full max-w-md mx-4 shadow-xl">
-                    <h2 class="text-2xl font-bold text-indigo-900 mb-6">Nuevo Producto</h2>
-                    <form class="space-y-6">
+            <!-- Modales adaptados para móvil -->
+            <div id="myModal" class="fixed inset-0 bg-indigo-900 bg-opacity-40 backdrop-blur-sm flex justify-center items-center hidden z-50 p-4">
+                <div class="bg-white p-6 md:p-8 rounded-2xl w-full max-w-md mx-auto shadow-xl">
+                    <h2 class="text-xl md:text-2xl font-bold text-indigo-900 mb-6">Nuevo Producto</h2>
+                    <form class="space-y-4 md:space-y-6">
                         <div>
                             <label class="block text-sm font-medium text-indigo-900 mb-2">Nombre</label>
                             <input type="text" id="productName" class="w-full px-4 py-3 rounded-xl border-2 border-indigo-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Nombre del producto">
@@ -99,11 +96,11 @@
                 </div>
             </div>
 
-            <!-- Modal moderno de Venta -->
-            <div id="modalVenta" class="fixed inset-0 bg-indigo-900 bg-opacity-40 backdrop-blur-sm flex justify-center items-center hidden z-50">
-                <div class="bg-white p-8 rounded-2xl w-full max-w-md mx-4 shadow-xl">
-                    <h2 class="text-2xl font-bold text-indigo-900 mb-6">Vender Producto</h2>
-                    <form class="space-y-6">
+            <!-- Modal de Venta adaptado para móvil -->
+            <div id="modalVenta" class="fixed inset-0 bg-indigo-900 bg-opacity-40 backdrop-blur-sm flex justify-center items-center hidden z-50 p-4">
+                <div class="bg-white p-6 md:p-8 rounded-2xl w-full max-w-md mx-auto shadow-xl">
+                    <h2 class="text-xl md:text-2xl font-bold text-indigo-900 mb-6">Vender Producto</h2>
+                    <form class="space-y-4 md:space-y-6">
                         <div>
                             <label class="block text-sm font-medium text-indigo-900 mb-2">Nombre</label>
                             <input type="text" id="ventaNombre" readonly class="w-full px-4 py-3 rounded-xl bg-indigo-50 border-2 border-indigo-100">
@@ -135,28 +132,26 @@
     <script>
         function cargarProductos() {
             $.ajax({
-                url: '/proyecto/public/bd/get_productos.php', // Ajusta la ruta según tu proyecto
+                url: '/proyecto/public/bd/get_productos.php',
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
                     let contenido = '';
                     data.forEach(producto => {
-                        contenido += `<tr class="text-center">
-                    <td class='border px-4 py-2'>${producto.id}</td>
-                    <td class='border px-4 py-2'>${producto.nombre}</td>
-                    <td class='border px-4 py-2'>${producto.descripcion}</td>
-                    <td class='border px-4 py-2'>$${producto.precio}</td>
-                    <td class='border px-4 py-2'>${producto.stock}</td>
-                    <td class='border px-4 py-2'>${producto.categoria}</td>
-                    <td class="border px-4 py-2">
-                        <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded" 
-                        onclick="venderProducto(${producto.id})">Vender</button> </td>
-                    <td class="border px-4 py-2"> 
-                        <button class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
-                        onclick="eliminarProducto(${producto.id})">Eliminar </button> </td>
-
-                   
-                </tr>`;
+                        contenido += `<tr class="text-center hover:bg-pink-50">
+                            <td class='px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm'>${producto.id}</td>
+                            <td class='px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm'>${producto.nombre}</td>
+                            <td class='px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm'>${producto.descripcion}</td>
+                            <td class='px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm'>$${producto.precio}</td>
+                            <td class='px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm'>${producto.stock}</td>
+                            <td class='px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm'>${producto.categoria}</td>
+                            <td class="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm flex flex-col md:flex-row gap-2 md:gap-4">
+                                <button class="bg-green-500 hover:bg-green-600 text-white font-medium py-1 px-2 rounded-lg text-xs md:text-sm w-full md:w-auto" 
+                                onclick="venderProducto(${producto.id})">Vender</button>
+                                <button class="bg-red-500 hover:bg-red-600 text-white font-medium py-1 px-2 rounded-lg text-xs md:text-sm w-full md:w-auto"
+                                onclick="eliminarProducto(${producto.id})">Eliminar</button>
+                            </td>
+                        </tr>`;
                     });
                     $('#productos').html(contenido);
                 },
@@ -306,7 +301,7 @@
             }
 
             $.ajax({
-                url: '/proyecto/public/bd/insert_producto.php',
+                url: '/proyecto/public/bd/agregar_producto.php', // Ruta del backend PHP
                 method: 'POST',
                 data: {
                     nombre: nombre,

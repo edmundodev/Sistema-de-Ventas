@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +7,11 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <title>Sistema de Ventas - Gestión Moderna</title>
     <style>
         .gradient-text {
-            background: linear-gradient(45deg, #6366F1, #EC4899);
+            background: linear-gradient(45deg, #006d77, #83c5be);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -25,14 +25,41 @@
         }
 
         .glass-effect {
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(237, 246, 249, 0.7);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(237, 246, 249, 0.3);
+        }
+
+        .hero-pattern {
+            background-color: #edf6f9;
+            background-image: radial-gradient(#83c5be 0.5px, #edf6f9 0.5px);
+            background-size: 10px 10px;
+        }
+
+        .feature-card {
+            background: rgba(237, 246, 249, 0.9);
+            border: 1px solid rgba(131, 197, 190, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: #006d77;
+            transform: translateY(-5px);
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #006d77, #83c5be);
+            transition: all 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 109, 119, 0.2);
         }
     </style>
 </head>
 
-<body class="bg-gradient-to-br from-gray-50 to-gray-100" x-data="{ isOpen: false }" x-init="AOS.init()">
+<body class="bg-[#edf6f9]" x-data="{ isOpen: false }" x-init="AOS.init()">
     <nav class="fixed w-full glass-effect z-50">
         <div class="container px-6 py-4 mx-auto">
             <div class="lg:flex lg:items-center lg:justify-between">
@@ -51,229 +78,98 @@
                 <div x-cloak :class="[isOpen ? 'translate-x-0 opacity-100 ' : 'opacity-0 -translate-x-full']"
                     class="absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 bg-white md:bg-transparent md:relative md:w-auto md:opacity-100 md:translate-x-0 md:flex md:items-center">
                     <div class="flex flex-col md:flex-row md:mx-6">
-                        <a class="my-2 text-gray-700 hover:text-blue-500 md:mx-4 md:my-0" href="#">Inicio</a>
-                        <a class="my-2 text-gray-700 hover:text-blue-500 md:mx-4 md:my-0"
-                            href="newProductos.html">Productos</a>
-                        <a class="my-2 text-gray-700 hover:text-blue-500 md:mx-4 md:my-0"
-                            href="precios.html">Precios</a>
-                        <a class="my-2 text-gray-700 transition-colors duration-300 transform hover:text-blue-500 lg:mx-4 lg:my-0"
-                            href="contacto.html">Contacto</a>
-                    </div>
-                </div>
-
-                <div x-show="isOpen"
-                    class="absolute left-0 w-full lg:static lg:w-auto lg:opacity-100 lg:flex lg:items-center mt-2 lg:mt-0 bg-white lg:bg-transparent border-t lg:border-none"
-                    @click.away="isOpen = false" x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="opacity-0 transform -translate-y-2"
-                    x-transition:enter-end="opacity-100 transform translate-y-0">
-                    <div class="flex flex-col lg:flex-row lg:mx-6">
-                        <a class="my-2 text-gray-700 transition-colors duration-300 transform hover:text-blue-500 lg:mx-4 lg:my-0"
-                            href="#">Inicio</a>
-                        <a class="my-2 text-gray-700 transition-colors duration-300 transform hover:text-blue-500 lg:mx-4 lg:my-0"
-                            href="productos.html">Productos</a>
-                        <a class="my-2 text-gray-700 transition-colors duration-300 transform hover:text-blue-500 lg:mx-4 lg:my-0"
-                            href="reportes.html">Reportes</a>
-                        <a class="my-2 text-gray-700 transition-colors duration-300 transform hover:text-blue-500 lg:mx-4 lg:my-0"
-                            href="contacto.html">Contacto</a>
+                        <a class="my-2 text-[#006d77] hover:text-[#83c5be] md:mx-4 md:my-0" href="#">Inicio</a>
+                        <a class="my-2 text-[#006d77] hover:text-[#83c5be] md:mx-4 md:my-0" href="newProductos.html">Productos</a>
+                        <a class="my-2 text-[#006d77] hover:text-[#83c5be] md:mx-4 md:my-0" href="precios.html">Precios</a>
+                        <a class="my-2 text-[#006d77] hover:text-[#83c5be] md:mx-4 md:my-0" href="contacto.html">Contacto</a>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="pt-24">
-        <!-- Hero Section -->
-        <section class="relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-r from-indigo-100 to-pink-100 opacity-30"></div>
-            <div class="container px-6 py-24 mx-auto relative">
-                <div class="flex flex-col lg:flex-row items-center gap-12">
-                    <div class="w-full lg:w-1/2" data-aos="fade-right">
-                        <h1 class="text-6xl font-bold text-gray-900 mb-8 leading-tight">
-                            Sistema de Ventas
-                            <span class="gradient-text block">Inteligente</span>
-                        </h1>
-                        <p class="text-xl text-gray-600 mb-12 leading-relaxed">Revoluciona tu negocio con nuestra solución integral. Gestión avanzada de inventario, clientes y análisis en tiempo real.</p>
-                        <div class="flex space-x-6">
-                            <button class="px-8 py-4 text-lg font-medium text-white bg-gradient-to-r from-indigo-600 to-pink-500 rounded-lg hover:opacity-90 transition-opacity shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                                <a href="registro.html">Empezar Ahora</a>
-                            </button>
-                            <button class="px-8 py-4 text-lg font-medium text-indigo-600 border-2 border-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors">
-                                <a href="#features">Conoce Más</a>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="w-full lg:w-1/2" data-aos="fade-left">
-                        <div class="relative">
-                            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-pink-500 rounded-3xl transform rotate-6 opacity-20"></div>
-                            <img src="https://merakiui.com/images/components/Catalogue-pana.svg" alt="Dashboard" class="relative w-full h-auto hover-scale rounded-2xl shadow-2xl">
-                        </div>
-                    </div>
-                </div>
+    <!-- Hero Section -->
+    <section class="hero-pattern min-h-screen flex items-center justify-center pt-20">
+        <div class="container mx-auto px-6 py-16 text-center" data-aos="fade-up">
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-8 gradient-text">Gestión de Ventas Inteligente</h1>
+            <p class="text-[#006d77] text-xl md:text-2xl mb-12 max-w-3xl mx-auto">Optimiza tu negocio con nuestro sistema de gestión de ventas. Controla inventario, analiza datos y aumenta tus ganancias.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#" class="bg-[#006d77] text-white px-8 py-4 rounded-lg hover-scale hover:bg-[#83c5be] transition-colors duration-300">Comenzar Ahora</a>
+                <a href="#" class="border-2 border-[#006d77] text-[#006d77] px-8 py-4 rounded-lg hover-scale hover:bg-[#006d77] hover:text-white transition-colors duration-300">Ver Demo</a>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Features Section -->
-        <section id="features" class="py-24 bg-gradient-to-b from-white to-gray-50">
-            <div class="container px-6 mx-auto">
-                <h2 class="text-4xl font-bold text-center text-gray-900 mb-20" data-aos="fade-up">Características Principales</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <!-- Feature cards con el mismo contenido pero estilo actualizado -->
-                    <div class="glass-effect rounded-xl p-8 shadow-lg hover-scale" data-aos="fade-up" data-aos-delay="100">
-                        <div class="text-4xl mb-6 bg-gradient-to-br from-indigo-100 to-pink-100 w-16 h-16 flex items-center justify-center rounded-lg">💰</div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Ventas Simplificadas</h3>
-                        <p class="text-gray-600">Proceso de venta intuitivo y rápido con múltiples formas de pago.</p>
+    <!-- Features Section -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16 gradient-text" data-aos="fade-up">Características Principales</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card p-8 rounded-xl" data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-[#006d77] text-4xl mb-4">
+                        <i class="fas fa-chart-line"></i>
                     </div>
-                    <!-- Feature 2 -->
-                    <div class="bg-white rounded-lg p-8 shadow-lg hover-scale" data-aos="fade-up" data-aos-delay="200">
-                        <div class="text-4xl mb-4">📊</div>
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Reportes en Tiempo Real</h3>
-                        <p class="text-gray-600">Analítica avanzada y reportes personalizados para tomar mejores
-                            decisiones.</p>
+                    <h3 class="text-2xl font-semibold text-[#006d77] mb-4">Análisis en Tiempo Real</h3>
+                    <p class="text-[#006d77]">Monitorea el rendimiento de tu negocio con dashboards interactivos y reportes detallados.</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="feature-card p-8 rounded-xl" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-[#006d77] text-4xl mb-4">
+                        <i class="fas fa-box"></i>
                     </div>
-                    <!-- Feature 3 -->
-                    <div class="bg-white rounded-lg p-8 shadow-lg hover-scale" data-aos="fade-up" data-aos-delay="300">
-                        <div class="text-4xl mb-4">📦</div>
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Control de Inventario</h3>
-                        <p class="text-gray-600">Gestión automatizada de stock con alertas y predicciones.</p>
+                    <h3 class="text-2xl font-semibold text-[#006d77] mb-4">Control de Inventario</h3>
+                    <p class="text-[#006d77]">Gestiona tu stock de manera eficiente con alertas automáticas y seguimiento en tiempo real.</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="feature-card p-8 rounded-xl" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-[#006d77] text-4xl mb-4">
+                        <i class="fas fa-users"></i>
                     </div>
-                    <!-- Feature 4 -->
-                    <div class="bg-white rounded-lg p-8 shadow-lg hover-scale" data-aos="fade-up" data-aos-delay="400">
-                        <div class="text-4xl mb-4">👥</div>
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Gestión de Clientes</h3>
-                        <p class="text-gray-600">CRM integrado para seguimiento y fidelización de clientes.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Estadísticas Section -->
-    <section class="py-20 bg-blue-600">
-        <div class="container px-6 mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-                <div class="p-4" data-aos="fade-up" data-aos-delay="100">
-                    <h2 class="text-4xl font-bold text-white mb-2">2,000+</h2>
-                    <p class="text-blue-100">Clientes Activos</p>
-                </div>
-                <div class="p-4" data-aos="fade-up" data-aos-delay="200">
-                    <h2 class="text-4xl font-bold text-white mb-2">15M+</h2>
-                    <p class="text-blue-100">Ventas Procesadas</p>
-                </div>
-                <div class="p-4" data-aos="fade-up" data-aos-delay="300">
-                    <h2 class="text-4xl font-bold text-white mb-2">99.9%</h2>
-                    <p class="text-blue-100">Tiempo Activo</p>
-                </div>
-                <div class="p-4" data-aos="fade-up" data-aos-delay="400">
-                    <h2 class="text-4xl font-bold text-white mb-2">24/7</h2>
-                    <p class="text-blue-100">Soporte Técnico</p>
+                    <h3 class="text-2xl font-semibold text-[#006d77] mb-4">Gestión de Clientes</h3>
+                    <p class="text-[#006d77]">Mantén un registro detallado de tus clientes y sus preferencias de compra.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Testimonios Section -->
-    <section class="py-20 bg-gray-50">
-        <div class="container px-6 mx-auto">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-16" data-aos="fade-up">Lo que dicen nuestros
-                clientes</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-white p-8 rounded-lg shadow-lg hover-scale" data-aos="fade-up" data-aos-delay="100">
-                    <div class="flex items-center mb-4">
-                        <div
-                            class="h-12 w-12 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl font-bold">
-                            M</div>
-                        <div class="ml-4">
-                            <h4 class="text-xl font-semibold text-gray-800">María González</h4>
-                            <p class="text-gray-600">Dueña de Tienda</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-600">"Este sistema ha revolucionado la manera en que manejo mi negocio. La
-                        gestión de inventario es mucho más eficiente."</p>
+    <!-- Stats Section -->
+    <section class="py-20 bg-[#edf6f9]">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Stat 1 -->
+                <div class="stats-card p-8 rounded-xl text-center text-white" data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-4xl font-bold mb-2">+5000</div>
+                    <div class="text-lg">Usuarios Activos</div>
                 </div>
-                <div class="bg-white p-8 rounded-lg shadow-lg hover-scale" data-aos="fade-up" data-aos-delay="200">
-                    <div class="flex items-center mb-4">
-                        <div
-                            class="h-12 w-12 rounded-full bg-green-500 flex items-center justify-center text-white text-xl font-bold">
-                            J</div>
-                        <div class="ml-4">
-                            <h4 class="text-xl font-semibold text-gray-800">Juan Pérez</h4>
-                            <p class="text-gray-600">Gerente Comercial</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-600">"Los reportes en tiempo real me permiten tomar decisiones informadas. El
-                        soporte técnico es excelente."</p>
+                <!-- Stat 2 -->
+                <div class="stats-card p-8 rounded-xl text-center text-white" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-4xl font-bold mb-2">+1M</div>
+                    <div class="text-lg">Transacciones</div>
                 </div>
-                <div class="bg-white p-8 rounded-lg shadow-lg hover-scale" data-aos="fade-up" data-aos-delay="300">
-                    <div class="flex items-center mb-4">
-                        <div
-                            class="h-12 w-12 rounded-full bg-purple-500 flex items-center justify-center text-white text-xl font-bold">
-                            A</div>
-                        <div class="ml-4">
-                            <h4 class="text-xl font-semibold text-gray-800">Ana Martínez</h4>
-                            <p class="text-gray-600">Emprendedora</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-600">"Increíblemente fácil de usar. Ha ayudado a mi negocio a crecer de manera
-                        significativa."</p>
+                <!-- Stat 3 -->
+                <div class="stats-card p-8 rounded-xl text-center text-white" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-4xl font-bold mb-2">99.9%</div>
+                    <div class="text-lg">Disponibilidad</div>
+                </div>
+                <!-- Stat 4 -->
+                <div class="stats-card p-8 rounded-xl text-center text-white" data-aos="fade-up" data-aos-delay="400">
+                    <div class="text-4xl font-bold mb-2">24/7</div>
+                    <div class="text-lg">Soporte</div>
                 </div>
             </div>
         </div>
     </section>
-
 
     <!-- CTA Section -->
-    <section class="py-20 bg-gradient-to-r from-blue-600 to-blue-800">
-        <div class="container px-6 mx-auto text-center">
-            <h2 class="text-3xl font-bold text-white mb-8" data-aos="fade-up">¿Listo para transformar tu negocio?</h2>
-            <p class="text-xl text-blue-100 mb-8" data-aos="fade-up" data-aos-delay="100">Únete a miles de empresas que
-                ya están optimizando sus ventas</p>
-            <button
-                class="px-8 py-4 bg-white text-blue-600 rounded-lg font-bold hover:bg-blue-50 transition-colors hover-scale"
-                data-aos="fade-up" data-aos-delay="200">
-                <a href="registro.html">Comenzar Prueba Gratuita</a>
-            </button>
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold mb-8 gradient-text" data-aos="fade-up">¿Listo para Optimizar tu Negocio?</h2>
+            <p class="text-[#006d77] text-xl mb-12 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Únete a miles de empresas que ya están transformando su gestión de ventas con nuestra plataforma.</p>
+            <a href="#" class="bg-[#006d77] text-white px-12 py-4 rounded-lg hover-scale hover:bg-[#83c5be] transition-colors duration-300 inline-block" data-aos="fade-up" data-aos-delay="200">Comenzar Gratis</a>
         </div>
     </section>
-
-    <footer class="bg-gray-900 text-white py-12">
-        <div class="container px-6 mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="space-y-4">
-                    <h4 class="text-xl font-bold gradient-text">VentasPRO</h4>
-                    <p class="text-gray-400">Solución integral para la gestión de tu negocio</p>
-                </div>
-                <div class="space-y-4">
-                    <h4 class="text-lg font-semibold">Producto</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Características</a>
-                        </li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Precios</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Demo</a></li>
-                    </ul>
-                </div>
-                <div class="space-y-4">
-                    <h4 class="text-lg font-semibold">Soporte</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Documentación</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Tutoriales</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
-                    </ul>
-                </div>
-                <div class="space-y-4">
-                    <h4 class="text-lg font-semibold">Contacto</h4>
-                    <ul class="space-y-2">
-                        <li class="text-gray-400">Email: perezsanchezedmundo4@gmail.com</li>
-                        <li class="text-gray-400">Tel: (221) 571 1441</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-                <p>© 2024 VentasPRO. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
 
     <script src="../js/modales_ventas.js"></script>
 </body>
-
 </html>
