@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Ventas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, #2c3e50 0%, #34495e 100%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .stats-card {
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            color: #2c3e50;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #2c3e50 0%, #34495e 100%);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .cart-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .cart-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .viewport {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            height: 300px;
+            margin: 0 auto 1rem;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .viewport > video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .viewport > canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .scanning-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(44, 62, 80, 0.1), rgba(44, 62, 80, 0.2));
+            pointer-events: none;
+        }
+
+        .scanning-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #2c3e50;
+            animation: scan 2s linear infinite;
+            box-shadow: 0 0 8px rgba(44, 62, 80, 0.5);
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            50% { top: 100%; }
+            100% { top: 0; }
+        }
+
+        .detection-success {
+            animation: success-flash 0.2s ease-out;
+        }
+
+        @keyframes success-flash {
+            0% { box-shadow: 0 0 0 3px rgba(44, 62, 80, 0); }
+            50% { box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.5); }
+            100% { box-shadow: 0 0 0 3px rgba(44, 62, 80, 0); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .stats-card {
+                margin-bottom: 1rem;
+            }
+            .viewport {
+                height: 240px;
+                margin: 0.5rem auto;
+                border-radius: 8px;
+            }
+
+            #interactive.viewport > video {
+                width: 100% !important;
+                height: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">Ventas<span class="text-warning">PRO</span></a>
+            <div class="d-flex">
+                <a href="componentes.html" class="btn btn-outline-light me-2">
+                    <i class="fas fa-home me-1"></i>Inicio
+                </a>
+                <button onclick="logout()" class="btn btn-warning text-dark">
+                    <i class="fas fa-sign-out-alt me-1"></i>Cerrar sesión
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <!-- Estadísticas -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card stats-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="stats-icon me-3">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 text-muted">Ventas Hoy</h6>
+                                <h3 class="mb-0" id="totalVentasDia">$0.00</h3>
+                            </div>
+                        </div>
+                        <div class="progress" style="height: 4px;">
+                            <div class="progress-bar" style="width: 70%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="stats-icon me-3">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 text-muted">Productos Vendidos</h6>
+                                <h3 class="mb-0" id="productosVendidos">0</h3>
+                            </div>
+                        </div>
+                        <div class="progress" style="height: 4px;">
+                            <div class="progress-bar bg-success" style="width: 60%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="stats-icon me-3">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 text-muted">Clientes Atendidos</h6>
+                                <h3 class="mb-0" id="clientesAtendidos">0</h3>
+                            </div>
+                        </div>
+                        <div class="progress" style="height: 4px;">
+                            <div class="progress-bar bg-info" style="width: 80%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="stats-icon me-3">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 text-muted">Promedio Venta</h6>
+                                <h3 class="mb-0" id="promedioVenta">$0.00</h3>
+                            </div>
+                        </div>
+                        <div class="progress" style="height: 4px;">
+                            <div class="progress-bar bg-warning" style="width: 50%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Escáner de código de barras -->
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Escanear Producto</h5>
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <input type="text" id="barcode" class="form-control" placeholder="Código de barras" readonly>
+                                <button type="button" class="btn btn-primary" id="startScanner">
+                                    <i class="fas fa-barcode me-1"></i>Escanear
+                                </button>
+                            </div>
+                        </div>
+                        <div id="interactive" class="viewport d-none"></div>
+                    </div>
+                </div>
+
+                <!-- Lista de Productos -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="card-title mb-0">Productos Disponibles</h5>
+                            <div class="input-group w-50">
+                                <span class="input-group-text bg-white">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control" placeholder="Buscar productos..." id="searchInput">
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Precio</th>
+                                        <th>Stock</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productos"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carrito de Compras -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Carrito de Venta</h5>
+                        <div id="carritoItems" class="mb-4">
+                            <!-- Los items del carrito se agregarán aquí dinámicamente -->
+                        </div>
+                        <div class="border-top pt-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Subtotal</span>
+                                <span id="subtotal">$0.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>IVA (16%)</span>
+                                <span id="iva">$0.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="fw-bold">Total</span>
+                                <span class="fw-bold" id="total">$0.00</span>
+                            </div>
+                            <button class="btn btn-primary w-100" onclick="procesarVenta()">
+                                <i class="fas fa-check me-2"></i>Procesar Venta
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Variables globales
+        let carrito = [];
+        let totalVentasDia = 0;
+        let productosVendidosHoy = 0;
+        let clientesAtendidosHoy = 0;
+
+        // Función para cargar productos (modificada para solo mostrar productos escaneados)
+        function cargarProductos() {
+            // La tabla de productos se mantendrá vacía hasta que se escanee un código de barras
+            $('#productos').html('');
+        }
+
+        // Modificar la función buscarProductoPorBarcode para mostrar solo el producto escaneado
+        function buscarProductoPorBarcode(barcode) {
+            $.ajax({
+                url: '/proyecto/public/bd/get_productos.php',
+                method: 'GET',
+                data: { barcode: barcode },
+                dataType: 'json',
+                success: function(data) {
+                    if (data && data.length > 0) {
+                        const producto = data[0];
+                        // Mostrar solo el producto escaneado en la tabla
+                        let contenido = `
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="ms-2">
+                                            <div class="fw-bold">${producto.nombre}</div>
+                                            <div class="text-muted small">${producto.descripcion}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>$${producto.precio}</td>
+                                <td>
+                                    <span class="badge bg-${producto.stock > 10 ? 'success' : 'warning'} rounded-pill">
+                                        ${producto.stock}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" onclick="agregarAlCarrito(${JSON.stringify(producto).replace(/"/g, "'")})">
+                                        <i class="fas fa-plus me-1"></i>Agregar
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                        $('#productos').html(contenido);
+                        
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Producto encontrado',
+                            text: `${producto.nombre} - $${producto.precio}`,
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        $('#productos').html('');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Producto no encontrado',
+                            text: 'No se encontró ningún producto con este código de barras',
+                            confirmButtonColor: '#2c3e50'
+                        });
+                    }
+                },
+                error: function(error) {
+                    console.error('Error al buscar producto:', error);
+                    Swal.fire('Error', 'No se pudo buscar el producto', 'error');
+                }
+            });
+        }
+
+        // Eliminar la búsqueda en tiempo real ya que ahora solo se usará el escáner
+        $('#searchInput').parent().parent().remove();
+
+        // Función para agregar al carrito
+        function agregarAlCarrito(producto) {
+            const itemExistente = carrito.find(item => item.id === producto.id);
+            
+            if (itemExistente) {
+                if (itemExistente.cantidad < producto.stock) {
+                    itemExistente.cantidad++;
+                } else {
+                    Swal.fire('Advertencia', 'No hay suficiente stock', 'warning');
+                    return;
+                }
+            } else {
+                if (producto.stock > 0) {
+                    carrito.push({...producto, cantidad: 1});
+                } else {
+                    Swal.fire('Advertencia', 'Producto sin stock', 'warning');
+                    return;
+                }
+            }
+            
+            actualizarCarritoUI();
+        }
+
+        // Función para actualizar la UI del carrito
+        function actualizarCarritoUI() {
+            let contenido = '';
+            let subtotal = 0;
+            
+            carrito.forEach(item => {
+                const total = item.precio * item.cantidad;
+                subtotal += total;
+                
+                contenido += `
+                    <div class="cart-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">${item.nombre}</h6>
+                                <small class="text-muted">$${item.precio} x ${item.cantidad}</small>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <span class="fw-bold me-3">$${total.toFixed(2)}</span>
+                                <button class="btn btn-sm btn-outline-danger" onclick="eliminarDelCarrito(${item.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const iva = subtotal * 0.16;
+            const total = subtotal + iva;
+
+            $('#carritoItems').html(contenido);
+            $('#subtotal').text(`$${subtotal.toFixed(2)}`);
+            $('#iva').text(`$${iva.toFixed(2)}`);
+            $('#total').text(`$${total.toFixed(2)}`);
+        }
+
+        // Función para eliminar del carrito
+        function eliminarDelCarrito(productoId) {
+            carrito = carrito.filter(item => item.id !== productoId);
+            actualizarCarritoUI();
+        }
+
+        // Función para procesar la venta
+        function procesarVenta() {
+            if (carrito.length === 0) {
+                Swal.fire('Error', 'El carrito está vacío', 'error');
+                return;
+            }
+
+            Swal.fire({
+                title: '¿Confirmar venta?',
+                text: 'Esta acción no se puede deshacer',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, procesar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Aquí procesamos cada item del carrito
+                    const promesasVenta = carrito.map(item => {
+                        return $.ajax({
+                            url: '/proyecto/public/bd/registrar_venta.php',
+                            method: 'POST',
+                            data: {
+                                producto_id: item.id,
+                                cantidad: item.cantidad
+                            },
+                            dataType: 'json'
+                        });
+                    });
+
+                    Promise.all(promesasVenta)
+                        .then(responses => {
+                            // Actualizar estadísticas
+                            const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+                            totalVentasDia += total;
+                            productosVendidosHoy += carrito.reduce((sum, item) => sum + item.cantidad, 0);
+                            clientesAtendidosHoy++;
+
+                            actualizarEstadisticas();
+                            carrito = [];
+                            actualizarCarritoUI();
+                            cargarProductos();
+
+                            Swal.fire('¡Éxito!', 'Venta procesada correctamente', 'success');
+                        })
+                        .catch(error => {
+                            console.error('Error al procesar la venta:', error);
+                            Swal.fire('Error', 'No se pudo procesar la venta', 'error');
+                        });
+                }
+            });
+        }
+
+        // Función para actualizar estadísticas
+        function actualizarEstadisticas() {
+            $('#totalVentasDia').text(`$${totalVentasDia.toFixed(2)}`);
+            $('#productosVendidos').text(productosVendidosHoy);
+            $('#clientesAtendidos').text(clientesAtendidosHoy);
+            $('#promedioVenta').text(
+                clientesAtendidosHoy > 0 
+                ? `$${(totalVentasDia / clientesAtendidosHoy).toFixed(2)}` 
+                : '$0.00'
+            );
+        }
+
+        // Búsqueda en tiempo real
+        $('#searchInput').on('input', function() {
+            const searchTerm = $(this).val().toLowerCase();
+            $('#productos tr').each(function() {
+                const texto = $(this).text().toLowerCase();
+                $(this).toggle(texto.indexOf(searchTerm) > -1);
+            });
+        });
+
+        // Función de logout
+        function logout() {
+            window.location.href = "/proyecto/public/bd/logout.php";
+        }
+
+        let isScanning = false;
+
+        $('#startScanner').click(function() {
+            const viewport = $('#interactive');
+            if (!isScanning) {
+                viewport.removeClass('d-none');
+                initQuagga();
+                $(this).html('<i class="fas fa-times me-1"></i>Detener');
+                viewport.append('<div class="scanning-overlay"><div class="scanning-line"></div></div>');
+            } else {
+                stopQuagga();
+                viewport.addClass('d-none');
+                viewport.find('.scanning-overlay').remove();
+                $(this).html('<i class="fas fa-barcode me-1"></i>Escanear');
+            }
+            isScanning = !isScanning;
+        });
+
+        function initQuagga() {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector("#interactive"),
+                    constraints: {
+                        facingMode: "environment",
+                        width: { min: 640 },
+                        height: { min: 480 },
+                        aspectRatio: { min: 1, max: 2 },
+                        focusMode: "continuous"
+                    },
+                },
+                locator: {
+                    patchSize: "medium",
+                    halfSample: true
+                },
+                numOfWorkers: navigator.hardwareConcurrency || 4,
+                decoder: {
+                    readers: [
+                        "ean_reader",
+                        "ean_8_reader",
+                        "code_128_reader",
+                        "code_39_reader",
+                        "upc_reader",
+                        "upc_e_reader"
+                    ],
+                    debug: {
+                        drawBoundingBox: true,
+                        showFrequency: true,
+                        drawScanline: true,
+                        showPattern: true
+                    }
+                },
+                locate: true
+            }, function(err) {
+                if (err) {
+                    console.error(err);
+                    let errorMessage = 'Error al iniciar el escáner';
+                    if (err.name === 'NotAllowedError') {
+                        errorMessage = 'Por favor, permite el acceso a la cámara para escanear códigos de barras';
+                    } else if (err.name === 'NotFoundError') {
+                        errorMessage = 'No se encontró ninguna cámara en el dispositivo';
+                    } else if (err.name === 'NotReadableError') {
+                        errorMessage = 'La cámara está en uso por otra aplicación';
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de cámara',
+                        text: errorMessage,
+                        confirmButtonColor: '#2c3e50'
+                    });
+                    stopQuagga();
+                    $('#interactive').addClass('d-none');
+                    $('#startScanner').html('<i class="fas fa-barcode me-1"></i>Escanear');
+                    isScanning = false;
+                    return;
+                }
+                Quagga.start();
+            });
+
+            let lastResults = [];
+            const requiredSuccessfulScans = 3;
+
+            Quagga.onDetected(function(result) {
+                let code = result.codeResult.code;
+                
+                // Visual feedback
+                $('#interactive').addClass('detection-success');
+                setTimeout(() => $('#interactive').removeClass('detection-success'), 200);
+
+                lastResults.push(code);
+                if (lastResults.length > requiredSuccessfulScans) {
+                    lastResults.shift();
+                }
+
+                // Check if we have enough consistent readings
+                if (lastResults.length === requiredSuccessfulScans && 
+                    lastResults.every(res => res === lastResults[0])) {
+                    
+                    $('#barcode').val(code);
+                    buscarProductoPorBarcode(code);
+                    stopQuagga();
+                    $('#interactive').addClass('d-none').find('.scanning-overlay').remove();
+                    $('#startScanner').html('<i class="fas fa-barcode me-1"></i>Escanear');
+                    isScanning = false;
+
+                    // Vibrate if available
+                    if (navigator.vibrate) {
+                        navigator.vibrate(200);
+                    }
+
+                    lastResults = [];
+                }
+            });
+        }
+
+        function stopQuagga() {
+            if (Quagga) {
+                Quagga.stop();
+                const canvas = document.querySelector('#interactive canvas');
+                if (canvas) {
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+        }
+
+        function buscarProductoPorBarcode(barcode) {
+            $.ajax({
+                url: '/proyecto/public/bd/get_productos.php',
+                method: 'GET',
+                data: { barcode: barcode },
+                dataType: 'json',
+                success: function(data) {
+                    if (data && data.length > 0) {
+                        const producto = data[0];
+                        agregarAlCarrito(producto);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Producto encontrado',
+                            text: `${producto.nombre} - $${producto.precio}`,
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Producto no encontrado',
+                            text: 'No se encontró ningún producto con este código de barras',
+                            confirmButtonColor: '#2c3e50'
+                        });
+                    }
+                },
+                error: function(error) {
+                    console.error('Error al buscar producto:', error);
+                    Swal.fire('Error', 'No se pudo buscar el producto', 'error');
+                }
+            });
+        }
+
+        // Inicialización
+        $(document).ready(function() {
+            cargarProductos();
+            actualizarEstadisticas();
+        });
+    </script>
+</body>
+</html>

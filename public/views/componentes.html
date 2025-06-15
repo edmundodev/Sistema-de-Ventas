@@ -1,120 +1,122 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Componentes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <style>
-        .gradient-bg {
-            background: linear-gradient(45deg, #6366F1, #EC4899);
+        body { 
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
         }
-
-        .gradient-text {
-            background: linear-gradient(45deg, #6366F1, #EC4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .glass-effect {
+        .card {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(90deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+        }
+        .card-title {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .card-text {
+            color: #6c757d;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .card {
+                margin-bottom: 1rem;
+            }
         }
     </style>
 </head>
 
-<body class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex justify-center items-center p-8 font-sans">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl w-full p-4">
-        <!-- Productos -->
-        <div
-            class="glass-effect rounded-2xl p-8 text-center relative transition-all duration-300 hover:-translate-y-2 hover:shadow-xl cursor-pointer group overflow-hidden">
-            <div class="relative">
-                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-indigo-500 to-pink-500 p-[2px]">
-                    <div class="w-full h-full rounded-full bg-white flex items-center justify-center">
-                        <i class="fas fa-box text-4xl gradient-text"></i>
+<body class="d-flex align-items-center justify-content-center py-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Productos -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <a href="productos.html" class="text-decoration-none">
+                    <div class="card h-100 p-4 text-center">
+                        <div class="icon-circle mb-3">
+                            <i class="fas fa-box fa-2x"></i>
+                        </div>
+                        <h3 class="card-title h4 mb-3">Productos</h3>
+                        <p class="card-text">Gestiona tu inventario y catálogo de productos de manera eficiente</p>
                     </div>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Productos</h3>
-                <p class="text-gray-600">Gestiona tu inventario y catálogo de productos de manera eficiente</p>
+                </a>
             </div>
-        </div>
 
-        <!-- Ventas -->
-        <a href="productos.html"
-            class="glass-effect rounded-2xl p-8 text-center relative transition-all duration-300 hover:-translate-y-2 hover:shadow-xl cursor-pointer group overflow-hidden block">
-            <div class="relative">
-                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-indigo-500 to-pink-500 p-[2px]">
-                    <div class="w-full h-full rounded-full bg-white flex items-center justify-center">
-                        <i class="fas fa-shopping-cart text-4xl gradient-text"></i>
+            <!-- Ventas -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <a href="ventas.html" class="text-decoration-none">
+                    <div class="card h-100 p-4 text-center">
+                        <div class="icon-circle mb-3">
+                            <i class="fas fa-shopping-cart fa-2x"></i>
+                        </div>
+                        <h3 class="card-title h4 mb-3">Ventas</h3>
+                        <p class="card-text">Controla y analiza tus ventas en tiempo real</p>
                     </div>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Ventas</h3>
-                <p class="text-gray-600">Controla y analiza tus ventas en tiempo real</p>
+                </a>
             </div>
-        </a>
-        <!-- Reportes -->
-        <a href="Reportes.html"
-            class="glass-effect rounded-2xl p-8 text-center relative transition-all duration-300 hover:-translate-y-2 hover:shadow-xl cursor-pointer group overflow-hidden block">
-            <div class="relative">
-                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-indigo-500 to-pink-500 p-[2px]">
-                    <div class="w-full h-full rounded-full bg-white flex items-center justify-center">
-                        <i class="fas fa-chart-line text-4xl gradient-text"></i>
-                    </div>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Reportes</h3>
-                <p class="text-gray-600">Visualiza estadísticas y genera informes detallados</p>
-            </div>
-        </a>
 
-        <!-- Agregar Productos -->
-        <div
-            class="glass-effect rounded-2xl p-8 text-center relative transition-all duration-300 hover:-translate-y-2 hover:shadow-xl cursor-pointer group overflow-hidden">
-            <div class="relative">
-                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-indigo-500 to-pink-500 p-[2px]">
-                    <div class="w-full h-full rounded-full bg-white flex items-center justify-center">
-                        <i class="fas fa-plus-circle text-4xl gradient-text"></i>
+            <!-- Reportes -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <a href="Reportes.html" class="text-decoration-none">
+                    <div class="card h-100 p-4 text-center">
+                        <div class="icon-circle mb-3">
+                            <i class="fas fa-chart-line fa-2x"></i>
+                        </div>
+                        <h3 class="card-title h4 mb-3">Reportes</h3>
+                        <p class="card-text">Visualiza estadísticas y genera informes detallados</p>
                     </div>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Agregar Productos</h3>
-                <p class="text-gray-600">Añade nuevos productos a tu inventario fácilmente</p>
+                </a>
             </div>
-        </div>
-
-        <!-- Usuarios -->
-        <div
-            class="glass-effect rounded-2xl p-8 text-center relative transition-all duration-300 hover:-translate-y-2 hover:shadow-xl cursor-pointer group overflow-hidden">
-            <div class="relative">
-                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-indigo-500 to-pink-500 p-[2px]">
-                    <div class="w-full h-full rounded-full bg-white flex items-center justify-center">
-                        <i class="fas fa-users text-4xl gradient-text"></i>
+            
+            <!-- Usuarios -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100 p-4 text-center">
+                    <div class="icon-circle mb-3">
+                        <i class="fas fa-users fa-2x"></i>
                     </div>
+                    <h3 class="card-title h4 mb-3">Usuarios</h3>
+                    <p class="card-text">Administra los usuarios y sus permisos en el sistema</p>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Usuarios</h3>
-                <p class="text-gray-600">Administra los usuarios y sus permisos en el sistema</p>
             </div>
-        </div>
 
-        <!-- Configuración -->
-        <div
-            class="glass-effect rounded-2xl p-8 text-center relative transition-all duration-300 hover:-translate-y-2 hover:shadow-xl cursor-pointer group overflow-hidden">
-            <div class="relative">
-                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-indigo-500 to-pink-500 p-[2px]">
-                    <div class="w-full h-full rounded-full bg-white flex items-center justify-center">
-                        <i class="fas fa-cog text-4xl gradient-text"></i>
+            <!-- Configuración -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100 p-4 text-center">
+                    <div class="icon-circle mb-3">
+                        <i class="fas fa-cog fa-2x"></i>
                     </div>
+                    <h3 class="card-title h4 mb-3">Configuración</h3>
+                    <p class="card-text">Personaliza las opciones y ajustes de tu sistema</p>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Configuración</h3>
-                <p class="text-gray-600">Personaliza las opciones y ajustes de tu sistema</p>
             </div>
         </div>
     </div>
-</body>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

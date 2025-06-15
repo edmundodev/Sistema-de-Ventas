@@ -26,16 +26,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     }
 
+    $barcode = isset($_POST['barcode']) ? $_POST['barcode'] : '';
     $nombre = $_POST['nombre'];
     $descripcion = $_POST['descripcion'];
-    $precio = $_POST['precio'];
-    $stock = $_POST['stock'];
+    $precio = floatval($_POST['precio']);
+    $stock = intval($_POST['stock']);
     $categoria = $_POST['categoria'];
 
-    $sql = "INSERT INTO productos (nombre, descripcion, precio, stock, categoria, usuario_id)
-            VALUES (?, ?, ?, ?, ?, ?)";
+    // Verificar si el código de barras ya existe
+    if ($barcode !== '') {
+        $check_sql = "SELECT id FROM productos WHERE barcode = ?";
+        $check_stmt = $conn->prepare($check_sql);
+        $check_stmt->bind_param("s", $barcode);
+        $check_stmt->execute();
+        $check_stmt->store_result();
+        
+        if ($check_stmt->num_rows > 0) {
+            echo json_encode(["error" => "Ya existe un producto con este código de barras."]);
+            exit;
+        }
+        $check_stmt->close();
+    }
+
+    $sql = "INSERT INTO productos (barcode, nombre, descripcion, precio, stock, categoria, usuario_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssdisi", $nombre, $descripcion, $precio, $stock, $categoria, $usuario_id);
+
+    // Aquí el tipo correcto: sssdisi (string, string, string, double, int, string, int)
+    $stmt->bind_param("sssdisi", $barcode, $nombre, $descripcion, $precio, $stock, $categoria, $usuario_id);
 
     if ($stmt->execute()) {
         echo json_encode(["success" => true, "message" => "Producto agregado correctamente."]);

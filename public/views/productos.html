@@ -5,131 +5,304 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Productos</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, #2c3e50 0%, #34495e 100%);
+            padding: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #2c3e50 0%, #34495e 100%);
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .table th {
+            background: #f8f9fa;
+            color: #2c3e50;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .table td {
+            vertical-align: middle;
+            color: #2c3e50;
+        }
+
+        .modal-header {
+            background: linear-gradient(90deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+        }
+
+        .form-control:focus {
+            border-color: #2c3e50;
+            box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+        }
+
+        .btn-success {
+            background: #27ae60;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-danger {
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-group-text {
+            border: none;
+            background: #f8f9fa;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .table-responsive {
+                margin: 0 -1rem;
+            }
+
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+
+            .navbar .btn {
+                padding: 0.375rem 0.75rem;
+                font-size: 0.875rem;
+            }
+
+            .modal-dialog {
+                margin: 0.5rem;
+            }
+
+            .card {
+                margin-bottom: 1rem;
+            }
+
+            .table td,
+            .table th {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+
+            .btn-group-sm>.btn {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
 </head>
 
-<body class="bg-gradient-to-br from-pink-50 to-purple-50">
-    <!-- Navbar superior -->
-    <nav class="bg-gradient-to-r from-pink-500 to-purple-500 text-white py-4 px-6 shadow-lg">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
-            <h1 class="text-2xl font-bold mb-4 md:mb-0">VentasPRO</h1>
-            <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
-                <a href="componentes.html" class="hover:text-pink-200 transition-colors w-full md:w-auto text-center"><i class="fas fa-box mr-2"></i>Inicio</a>
-                <button onclick="logout()" class="text-red-300 hover:text-red-100 transition-colors w-full md:w-auto text-center"><i class="fas fa-sign-out-alt mr-2"></i>Cerrar sesión</button>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">Ventas<span class="text-warning">PRO</span></a>
+            <div class="d-flex">
+                <a href="componentes.html" class="btn btn-outline-light me-2">
+                    <i class="fas fa-home me-1"></i>Inicio
+                </a>
+                <button onclick="logout()" class="btn btn-warning text-dark">
+                    <i class="fas fa-sign-out-alt me-1"></i>Cerrar sesión
+                </button>
             </div>
         </div>
     </nav>
 
     <!-- Contenido principal -->
-    <main class="p-4 md:p-8">
-        <div class="max-w-7xl mx-auto">
-            <!-- Encabezado -->
-            <div class="flex flex-col md:flex-row justify-between items-center mb-8 space-y-4 md:space-y-0">
-                <h1 class="text-2xl md:text-3xl font-bold text-pink-900">Productos</h1>
-                <button id="openModal" class="w-full md:w-auto flex items-center justify-center gap-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                    <i class="fas fa-plus"></i>
-                    <span>Agregar Producto</span>
-                </button>
-            </div>
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-primary">Productos</h2>
+            <button id="openModal" class="btn btn-success">
+                <i class="fas fa-plus me-1"></i>Agregar Producto
+            </button>
+        </div>
 
-            <!-- Barra de búsqueda moderna -->
-            <div class="mb-8">
-                <div class="relative">
-                    <input type="text" placeholder="Buscar productos..." class="w-full px-4 md:px-6 py-3 md:py-4 pl-12 md:pl-14 rounded-xl bg-white shadow-sm border-2 border-pink-100 focus:border-pink-300 focus:ring focus:ring-pink-200 focus:ring-opacity-50 transition-all">
-                    <i class="fas fa-search absolute left-4 md:left-5 top-4 md:top-5 text-pink-400"></i>
+        <!-- Buscador -->
+        <div class="mb-4">
+            <div class="input-group shadow-sm">
+                <span class="input-group-text bg-white text-primary">
+                    <i class="fas fa-search"></i>
+                </span>
+                <input type="text" class="form-control" placeholder="Buscar productos...">
+            </div>
+        </div>
+
+        <!-- Tabla -->
+        <div class="card shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Producto</th>
+                            <th>Descripción</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Categoría</th>
+                            <th>Código de Barras</th> <!-- NUEVA COLUMNA -->
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productos"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal: Nuevo Producto -->
+    <div class="modal fade" id="myModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Nuevo Producto</h5>
+                    <button type="button" class="btn-close btn-close-white" id="closeModal"></button>
                 </div>
-            </div>
+                <div class="modal-body">
+                    <form id="formNuevoProducto" class="needs-validation">
+                        <div class="mb-3">
+                            <label class="form-label">Código de Barras</label>
+                            <div class="input-group">
+                                <input type="text" id="barcode" name="barcode" class="form-control"
+                                    placeholder="Código de barras" readonly>
+                                <button type="button" class="btn btn-primary" id="startScanner">
+                                    <i class="fas fa-barcode me-1"></i>Escanear
+                                </button>
+                            </div>
+                        </div>
+                        <div id="interactive" class="viewport d-none"></div>
 
-            <!-- Tabla moderna con scroll horizontal en móvil -->
-            <div class="bg-white rounded-xl shadow-sm border border-pink-100 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full min-w-[800px]">
-                        <thead>
-                            <tr class="bg-gradient-to-r from-pink-50 to-purple-50">
-                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-pink-900">ID</th>
-                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-pink-900">Producto</th>
-                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-pink-900">Descripción</th>
-                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-pink-900">Precio</th>
-                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-pink-900">Stock</th>
-                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-pink-900">Categoría</th>
-                                <th class="px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-pink-900">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productos" class="divide-y divide-pink-100"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Modales adaptados para móvil -->
-            <div id="myModal" class="fixed inset-0 bg-indigo-900 bg-opacity-40 backdrop-blur-sm flex justify-center items-center hidden z-50 p-4">
-                <div class="bg-white p-6 md:p-8 rounded-2xl w-full max-w-md mx-auto shadow-xl">
-                    <h2 class="text-xl md:text-2xl font-bold text-indigo-900 mb-6">Nuevo Producto</h2>
-                    <form class="space-y-4 md:space-y-6">
-                        <div>
-                            <label class="block text-sm font-medium text-indigo-900 mb-2">Nombre</label>
-                            <input type="text" id="productName" class="w-full px-4 py-3 rounded-xl border-2 border-indigo-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Nombre del producto">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" id="productName" name="nombre" class="form-control"
+                                placeholder="Nombre del producto">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-indigo-900 mb-2">Descripción</label>
-                            <input type="text" id="descripcionProduct" class="w-full px-4 py-3 rounded-xl border-2 border-indigo-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Descripción del producto">
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <input type="text" id="descripcionProduct" name="descripcion" class="form-control"
+                                placeholder="Descripción del producto">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-indigo-900 mb-2">Precio</label>
-                            <input type="text" id="productPrice" class="w-full px-4 py-3 rounded-xl border-2 border-indigo-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Precio">
+                        <div class="mb-3">
+                            <label class="form-label">Precio</label>
+                            <input type="number" step="0.01" id="productPrice" name="precio" class="form-control"
+                                placeholder="Precio">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-indigo-900 mb-2">Stock</label>
-                            <input type="text" id="productStock" class="w-full px-4 py-3 rounded-xl border-2 border-indigo-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Stock disponible">
+                        <div class="mb-3">
+                            <label class="form-label">Stock</label>
+                            <input type="number" id="productStock" name="stock" class="form-control"
+                                placeholder="Stock disponible">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-indigo-900 mb-2">Categoría</label>
-                            <input type="text" id="CategoriaProduct" class="w-full px-4 py-3 rounded-xl border-2 border-indigo-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Categoría">
+                        <div class="mb-3">
+                            <label class="form-label">Categoría</label>
+                            <input type="text" id="CategoriaProduct" name="categoria" class="form-control"
+                                placeholder="Categoría">
                         </div>
-                        <div class="flex justify-end gap-4 mt-8">
-                            <button type="button" id="closeModal" class="px-6 py-3 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all">Cancelar</button>
-                            <button type="submit" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl hover:shadow-lg transition-all">Guardar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Modal de Venta adaptado para móvil -->
-            <div id="modalVenta" class="fixed inset-0 bg-indigo-900 bg-opacity-40 backdrop-blur-sm flex justify-center items-center hidden z-50 p-4">
-                <div class="bg-white p-6 md:p-8 rounded-2xl w-full max-w-md mx-auto shadow-xl">
-                    <h2 class="text-xl md:text-2xl font-bold text-indigo-900 mb-6">Vender Producto</h2>
-                    <form class="space-y-4 md:space-y-6">
-                        <div>
-                            <label class="block text-sm font-medium text-indigo-900 mb-2">Nombre</label>
-                            <input type="text" id="ventaNombre" readonly class="w-full px-4 py-3 rounded-xl bg-indigo-50 border-2 border-indigo-100">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-indigo-900 mb-2">Descripción</label>
-                            <input type="text" id="ventaDescripcion" readonly class="w-full px-4 py-3 rounded-xl bg-indigo-50 border-2 border-indigo-100">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-indigo-900 mb-2">Precio</label>
-                            <input type="text" id="ventaPrecio" readonly class="w-full px-4 py-3 rounded-xl bg-indigo-50 border-2 border-indigo-100">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-indigo-900 mb-2">Cantidad</label>
-                            <input type="number" id="ventaCantidad" class="w-full px-4 py-3 rounded-xl border-2 border-indigo-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Cantidad a vender">
-                        </div>
-                        <input type="hidden" id="ventaID">
-                        <div class="flex justify-end gap-4 mt-8">
-                            <button type="button" id="cerrarVenta" class="px-6 py-3 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all">Cancelar</button>
-                            <button type="submit" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl hover:shadow-lg transition-all">Confirmar</button>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary me-2" id="closeModalBtn">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Guardar</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
-    <!-- Scripts -->
+
+
+    <!-- Modal: Vender Producto -->
+    <div class="modal fade" id="modalVenta" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Vender Producto</h5>
+                    <button type="button" class="btn-close btn-close-white" id="cerrarVenta"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" id="ventaNombre" readonly class="form-control bg-light">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <input type="text" id="ventaDescripcion" readonly class="form-control bg-light">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Precio</label>
+                            <input type="text" id="ventaPrecio" readonly class="form-control bg-light">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cantidad</label>
+                            <input type="number" id="ventaCantidad" class="form-control"
+                                placeholder="Cantidad a vender">
+                        </div>
+                        <input type="hidden" id="ventaID">
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary me-2" id="cerrarVentaBtn">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Confirmar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        const myModal = new bootstrap.Modal(document.getElementById('myModal'));
+
+        // Mostrar modal
+        $('#openModal').click(() => myModal.show());
+
+        // Cerrar modal
+        $('#closeModal, #closeModalBtn').click(() => myModal.hide());
+
+        // Cargar productos desde el backend
         function cargarProductos() {
             $.ajax({
                 url: '/proyecto/public/bd/get_productos.php',
@@ -138,18 +311,16 @@
                 success: function (data) {
                     let contenido = '';
                     data.forEach(producto => {
-                        contenido += `<tr class="text-center hover:bg-pink-50">
-                            <td class='px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm'>${producto.id}</td>
-                            <td class='px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm'>${producto.nombre}</td>
-                            <td class='px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm'>${producto.descripcion}</td>
-                            <td class='px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm'>$${producto.precio}</td>
-                            <td class='px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm'>${producto.stock}</td>
-                            <td class='px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm'>${producto.categoria}</td>
-                            <td class="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm flex flex-col md:flex-row gap-2 md:gap-4">
-                                <button class="bg-green-500 hover:bg-green-600 text-white font-medium py-1 px-2 rounded-lg text-xs md:text-sm w-full md:w-auto" 
-                                onclick="venderProducto(${producto.id})">Vender</button>
-                                <button class="bg-red-500 hover:bg-red-600 text-white font-medium py-1 px-2 rounded-lg text-xs md:text-sm w-full md:w-auto"
-                                onclick="eliminarProducto(${producto.id})">Eliminar</button>
+                        contenido += `<tr>
+                            <td>${producto.id}</td>
+                            <td>${producto.nombre}</td>
+                            <td>${producto.descripcion}</td>
+                            <td>$${producto.precio}</td>
+                            <td>${producto.stock}</td>
+                            <td>${producto.categoria}</td>
+                            <td>${producto.barcode || '-'}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})">Eliminar</button>
                             </td>
                         </tr>`;
                     });
@@ -161,79 +332,51 @@
             });
         }
 
-        function venderProducto(id) {
-            // Buscar el producto por ID en la tabla ya cargada
-            $.ajax({
-                url: '/proyecto/public/bd/get_producto_por_id.php', // Crea este PHP
-                method: 'GET',
-                data: {
-                    id: id
-                },
-                dataType: 'json',
-                success: function (producto) {
-                    // Rellenar los campos del modal
-                    $('#ventaID').val(producto.id);
-                    $('#ventaNombre').val(producto.nombre);
-                    $('#ventaDescripcion').val(producto.descripcion);
-                    $('#ventaPrecio').val(producto.precio);
-                    $('#ventaCantidad').val('');
+        // Guardar producto al enviar el formulario
+        $(document).ready(function () {
+            cargarProductos();
 
-                    // Mostrar el modal
-                    $('#modalVenta').removeClass('hidden');
-                },
-                error: function () {
-                    Swal.fire('Error', 'No se pudo cargar la información del producto', 'error');
+            $('#formNuevoProducto').submit(function (e) {
+                e.preventDefault();
+
+                const formData = {
+                    barcode: $('#barcode').val(),
+                    nombre: $('#productName').val().trim(),
+                    descripcion: $('#descripcionProduct').val().trim(),
+                    precio: $('#productPrice').val(),
+                    stock: $('#productStock').val(),
+                    categoria: $('#CategoriaProduct').val().trim()
+                };
+
+                if (!formData.nombre || !formData.precio || !formData.stock || !formData.categoria) {
+                    Swal.fire('Campos obligatorios', 'Por favor completa todos los campos requeridos',
+                        'warning');
+                    return;
                 }
-            });
-        }
 
-        $('#modalVenta form').submit(function (event) {
-            event.preventDefault();
-
-            const producto_id = $('#ventaID').val();
-            const cantidad = $('#ventaCantidad').val();
-
-            $.ajax({
-                url: '/proyecto/public/bd/registrar_venta.php',
-                method: 'POST',
-                data: {
-                    producto_id: producto_id,
-                    cantidad: cantidad
-                },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Venta realizada con éxito',
-                            timer: 1500,
-                            showConfirmButton: false
-                        }).then(() => {
-                            $('#modalVenta').addClass('hidden');
-                            cargarProductos(); // Recargar stock
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error en la venta',
-                            text: response.error
-                        });
+                $.ajax({
+                    url: '/proyecto/public/bd/agregar_producto.php',
+                    method: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    success: function (respuesta) {
+                        if (respuesta.success) {
+                            Swal.fire('Éxito', respuesta.message, 'success');
+                            myModal.hide();
+                            $('#formNuevoProducto')[0].reset();
+                            cargarProductos();
+                        } else {
+                            Swal.fire('Error', respuesta.error, 'error');
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'No se pudo conectar al servidor', 'error');
                     }
-                },
-                error: function (error) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'No se pudo completar la venta.'
-                    });
-                }
+                });
             });
         });
 
-
-
-
-
+        // Eliminar producto
         function eliminarProducto(id) {
             Swal.fire({
                 title: '¿Estás seguro?',
@@ -259,115 +402,349 @@
                                     timer: 1500,
                                     showConfirmButton: false
                                 });
-                                cargarProductos(); // Recarga la lista de productos
+                                cargarProductos();
                             } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: response.message
-                                });
+                                Swal.fire('Error', response.message, 'error');
                             }
                         },
                         error: function () {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'No se pudo conectar con el servidor.'
-                            });
+                            Swal.fire('Error', 'No se pudo conectar con el servidor.', 'error');
                         }
                     });
                 }
             });
         }
-
-
-
-
-        $(document).ready(() => {
-            cargarProductos();
-        });
-
-        // Funcion para agrgar Productos
-        function agregarProducto() {
-            const nombre = $('#productName').val().trim();
-            const descripcion = $('#descripcionProduct').val().trim();
-            const precio = $('#productPrice').val();
-            const stock = $('#productStock').val();
-            const categoria = $('#CategoriaProduct').val().trim();
-
-            if (!nombre || !precio || !stock || !categoria) {
-                Swal.fire('Campos obligatorios', 'Por favor completa todos los campos requeridos', 'warning');
-                return;
-            }
-
-            $.ajax({
-                url: '/proyecto/public/bd/agregar_producto.php', // Ruta del backend PHP
-                method: 'POST',
-                data: {
-                    nombre: nombre,
-                    descripcion: descripcion,
-                    precio: precio,
-                    stock: stock,
-                    categoria: categoria
-                },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Producto agregado',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                        $('#myModal').addClass('hidden');
-                        cargarProductos();
-                        $('#myModal form')[0].reset();
-                    } else {
-                        Swal.fire('Error', response.error || 'No se pudo agregar el producto', 'error');
-                    }
-                },
-                error: function () {
-                    Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
-                }
-            });
-        }
-
-
-        // Asignar la función al botón de guardar del formulario
-        $('#myModal button[type="submit"]').click(function (event) {
-            event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
-            agregarProducto(); // Llamar la función para agregar el producto
-        });
-
-
-
-        function logout() {
-            window.location.href = "/proyecto/public/bd/logout.php";
-        }
-
-        $(document).ready(function () {
-            cargarProductos();
-        });
-
-
-
-        const openModalBtn = document.getElementById('openModal');
-        const modal = document.getElementById('myModal');
-        const closeModalBtn = document.getElementById('closeModal');
-
-        // Mostrar modal
-        openModalBtn.addEventListener('click', () => {
-            modal.classList.remove('hidden');
-        });
-
-        // Cerrar modal
-        closeModalBtn.addEventListener('click', () => {
-            modal.classList.add('hidden');
-        });
-
-        $('#cerrarVenta').click(function () {
-            $('#modalVenta').addClass('hidden');
-        });
     </script>
 
+
 </html>
+
+<style>
+    .viewport {
+        position: relative;
+        width: 100%;
+        max-width: 640px;
+        height: 300px;
+        margin: 0 auto 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .viewport {
+            height: 240px;
+        }
+
+        #interactive.viewport>canvas,
+        #interactive.viewport>video {
+            max-width: 100%;
+            width: 100%;
+        }
+
+        .modal-dialog {
+            margin: 0.5rem;
+            max-width: 100%;
+        }
+
+        .modal-body {
+            padding: 1rem;
+        }
+    }
+
+    .viewport>video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .viewport>canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .viewport.d-none {
+        display: none !important;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+<script>
+    // Configuración del escáner de códigos de barras
+    let isScanning = false;
+
+    $('#startScanner').click(function () {
+        const viewport = $('#interactive');
+        if (!isScanning) {
+            viewport.removeClass('d-none');
+            initQuagga();
+            $(this).html('<i class="fas fa-times me-1"></i>Detener');
+            // Add scanning overlay
+            viewport.append('<div class="scanning-overlay"><div class="scanning-line"></div></div>');
+        } else {
+            stopQuagga();
+            viewport.addClass('d-none');
+            viewport.find('.scanning-overlay').remove();
+            $(this).html('<i class="fas fa-barcode me-1"></i>Escanear');
+        }
+        isScanning = !isScanning;
+    });
+
+    function initQuagga() {
+        Quagga.init({
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: document.querySelector("#interactive"),
+                constraints: {
+                    facingMode: "environment",
+                    width: {
+                        min: 640
+                    },
+                    height: {
+                        min: 480
+                    },
+                    aspectRatio: {
+                        min: 1,
+                        max: 2
+                    },
+                    focusMode: "continuous"
+                },
+            },
+            locator: {
+                patchSize: "medium",
+                halfSample: true
+            },
+            numOfWorkers: navigator.hardwareConcurrency || 4,
+            decoder: {
+                readers: [
+                    "ean_reader",
+                    "ean_8_reader",
+                    "code_128_reader",
+                    "code_39_reader",
+                    "upc_reader",
+                    "upc_e_reader"
+                ],
+                debug: {
+                    drawBoundingBox: true,
+                    showFrequency: true,
+                    drawScanline: true,
+                    showPattern: true
+                }
+            },
+            locate: true
+        }, function (err) {
+            if (err) {
+                console.error(err);
+                let errorMessage = 'Error al iniciar el escáner';
+                if (err.name === 'NotAllowedError') {
+                    errorMessage = 'Por favor, permite el acceso a la cámara para escanear códigos de barras';
+                } else if (err.name === 'NotFoundError') {
+                    errorMessage = 'No se encontró ninguna cámara en el dispositivo';
+                } else if (err.name === 'NotReadableError') {
+                    errorMessage = 'La cámara está en uso por otra aplicación';
+                }
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de cámara',
+                    text: errorMessage,
+                    confirmButtonColor: '#2c3e50'
+                });
+                stopQuagga();
+                $('#interactive').addClass('d-none');
+                $('#startScanner').html('<i class="fas fa-barcode me-1"></i>Escanear');
+                isScanning = false;
+                return;
+            }
+            Quagga.start();
+        });
+
+        let lastResults = [];
+        const requiredSuccessfulScans = 3;
+
+        Quagga.onDetected(function (result) {
+            let code = result.codeResult.code;
+
+            // Visual feedback
+            $('#interactive').addClass('detection-success');
+            setTimeout(() => $('#interactive').removeClass('detection-success'), 200);
+
+            lastResults.push(code);
+            if (lastResults.length > requiredSuccessfulScans) {
+                lastResults.shift();
+            }
+
+            // Check if we have enough consistent readings
+            if (lastResults.length === requiredSuccessfulScans &&
+                lastResults.every(res => res === lastResults[0])) {
+
+                $('#barcode').val(code);
+                stopQuagga();
+                $('#interactive').addClass('d-none').find('.scanning-overlay').remove();
+                $('#startScanner').html('<i class="fas fa-barcode me-1"></i>Escanear');
+                isScanning = false;
+
+                // Vibrate if available
+                if (navigator.vibrate) {
+                    navigator.vibrate(200);
+                }
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Código detectado',
+                    text: code,
+                    timer: 1500,
+                    showConfirmButton: false,
+                    background: '#f8f9fa',
+                    iconColor: '#2c3e50'
+                });
+
+                lastResults = [];
+            }
+        });
+
+        // Add sound feedback
+        Quagga.onProcessed(function (result) {
+            if (result) {
+                if (result.boxes) {
+                    // Draw boxes for potential barcodes
+                    drawResult(result);
+                }
+            }
+        });
+    }
+
+    function drawResult(result) {
+        const canvas = document.querySelector('#interactive canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        result.boxes.forEach(box => {
+            ctx.strokeStyle = '#2c3e50';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(box[0][0], box[0][1]);
+            box.forEach((p, i) => {
+                if (i > 0) ctx.lineTo(p[0], p[1]);
+            });
+            ctx.closePath();
+            ctx.stroke();
+        });
+    }
+
+    function stopQuagga() {
+        if (Quagga) {
+            Quagga.stop();
+            const canvas = document.querySelector('#interactive canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+    }
+</script>
+
+<style>
+    .viewport {
+        position: relative;
+        width: 100%;
+        max-width: 640px;
+        height: 300px;
+        margin: 0 auto 1rem;
+        overflow: hidden;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .viewport>video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .viewport>canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .scanning-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(rgba(44, 62, 80, 0.1), rgba(44, 62, 80, 0.2));
+        pointer-events: none;
+    }
+
+    .scanning-line {
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background: #2c3e50;
+        animation: scan 2s linear infinite;
+        box-shadow: 0 0 8px rgba(44, 62, 80, 0.5);
+    }
+
+    @keyframes scan {
+        0% {
+            top: 0;
+        }
+
+        50% {
+            top: 100%;
+        }
+
+        100% {
+            top: 0;
+        }
+    }
+
+    .detection-success {
+        animation: success-flash 0.2s ease-out;
+    }
+
+    @keyframes success-flash {
+        0% {
+            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0);
+        }
+
+        50% {
+            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.5);
+        }
+
+        100% {
+            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .viewport {
+            height: 240px;
+            margin: 0.5rem auto;
+            border-radius: 8px;
+        }
+
+        #interactive.viewport>video {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .modal-dialog {
+            margin: 0.5rem;
+            max-width: 100%;
+        }
+
+        .modal-body {
+            padding: 1rem;
+        }
+
+        .scanning-line {
+            height: 1px;
+        }
+    }
+</style>
