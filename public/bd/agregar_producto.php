@@ -26,12 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     }
 
-    $barcode = isset($_POST['barcode']) ? $_POST['barcode'] : '';
-    $nombre = $_POST['nombre'];
+    $barcode     = isset($_POST['barcode']) ? $_POST['barcode'] : '';
+    $nombre      = $_POST['nombre'];
     $descripcion = $_POST['descripcion'];
-    $precio = floatval($_POST['precio']);
-    $stock = intval($_POST['stock']);
-    $categoria = $_POST['categoria'];
+    $precio      = floatval($_POST['precio']);
+    $stock       = intval($_POST['stock']);
+    $categoria   = intval($_POST['categoria']); // Convertir a entero
 
     // Verificar si el código de barras ya existe
     if ($barcode !== '') {
@@ -51,9 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $sql = "INSERT INTO productos (barcode, nombre, descripcion, precio, stock, categoria, usuario_id)
             VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-
-    // Aquí el tipo correcto: sssdisi (string, string, string, double, int, string, int)
-    $stmt->bind_param("sssdisi", $barcode, $nombre, $descripcion, $precio, $stock, $categoria, $usuario_id);
+    $stmt->bind_param("sssdiii", $barcode, $nombre, $descripcion, $precio, $stock, $categoria, $usuario_id);
+    //                      ↑ s=string, d=double, i=integer
 
     if ($stmt->execute()) {
         echo json_encode(["success" => true, "message" => "Producto agregado correctamente."]);

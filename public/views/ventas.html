@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Ventas</title>
+    <link rel="icon" type="image/png" href="../css/img/ventasPro.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+
     <style>
         body {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -95,82 +96,12 @@
             border-radius: 8px;
         }
 
-        .viewport {
-            position: relative;
-            width: 100%;
-            max-width: 640px;
-            height: 300px;
-            margin: 0 auto 1rem;
-            overflow: hidden;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .viewport > video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .viewport > canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .scanning-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(rgba(44, 62, 80, 0.1), rgba(44, 62, 80, 0.2));
-            pointer-events: none;
-        }
-
-        .scanning-line {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: #2c3e50;
-            animation: scan 2s linear infinite;
-            box-shadow: 0 0 8px rgba(44, 62, 80, 0.5);
-        }
-
-        @keyframes scan {
-            0% { top: 0; }
-            50% { top: 100%; }
-            100% { top: 0; }
-        }
-
-        .detection-success {
-            animation: success-flash 0.2s ease-out;
-        }
-
-        @keyframes success-flash {
-            0% { box-shadow: 0 0 0 3px rgba(44, 62, 80, 0); }
-            50% { box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.5); }
-            100% { box-shadow: 0 0 0 3px rgba(44, 62, 80, 0); }
-        }
-
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
             }
             .stats-card {
                 margin-bottom: 1rem;
-            }
-            .viewport {
-                height: 240px;
-                margin: 0.5rem auto;
-                border-radius: 8px;
-            }
-
-            #interactive.viewport > video {
-                width: 100% !important;
-                height: 100% !important;
             }
         }
     </style>
@@ -275,13 +206,12 @@
                         <h5 class="card-title mb-3">Escanear Producto</h5>
                         <div class="mb-3">
                             <div class="input-group">
-                                <input type="text" id="barcode" class="form-control" placeholder="Código de barras" readonly>
+                                <input type="text" id="barcode" class="form-control" placeholder="Código de barras" autofocus>
                                 <button type="button" class="btn btn-primary" id="startScanner">
                                     <i class="fas fa-barcode me-1"></i>Escanear
                                 </button>
                             </div>
                         </div>
-                        <div id="interactive" class="viewport d-none"></div>
                     </div>
                 </div>
 
@@ -290,12 +220,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h5 class="card-title mb-0">Productos Disponibles</h5>
-                            <div class="input-group w-50">
-                                <span class="input-group-text bg-white">
-                                    <i class="fas fa-search text-muted"></i>
-                                </span>
-                                <input type="text" class="form-control" placeholder="Buscar productos..." id="searchInput">
-                            </div>
+
                         </div>
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0">
@@ -324,16 +249,19 @@
                         </div>
                         <div class="border-top pt-3">
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Subtotal</span>
-                                <span id="subtotal">$0.00</span>
+                                <span>Total a Pagar</span>
+                                <span id="total">$0.00</span>
                             </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>IVA (16%)</span>
-                                <span id="iva">$0.00</span>
+                            <div class="mb-3">
+                                <label for="dineroRecibido" class="form-label">Dinero Recibido</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="dineroRecibido" placeholder="0.00" step="0.01" min="0">
+                                </div>
                             </div>
                             <div class="d-flex justify-content-between mb-3">
-                                <span class="fw-bold">Total</span>
-                                <span class="fw-bold" id="total">$0.00</span>
+                                <span class="fw-bold">Cambio</span>
+                                <span class="fw-bold" id="cambio">$0.00</span>
                             </div>
                             <button class="btn btn-primary w-100" onclick="procesarVenta()">
                                 <i class="fas fa-check me-2"></i>Procesar Venta
@@ -360,6 +288,7 @@
         }
 
         // Modificar la función buscarProductoPorBarcode para mostrar solo el producto escaneado
+        // Modificar la función buscarProductoPorBarcode para mostrar solo el producto escaneado
         function buscarProductoPorBarcode(barcode) {
             $.ajax({
                 url: '/proyecto/public/bd/get_productos.php',
@@ -369,8 +298,10 @@
                 success: function(data) {
                     if (data && data.length > 0) {
                         const producto = data[0];
-                        // Mostrar solo el producto escaneado en la tabla
-                        let contenido = `
+                        // Obtener el contenido actual de la tabla
+                        let contenidoActual = $('#productos').html();
+                        // Agregar el nuevo producto a la tabla
+                        let nuevoProducto = `
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
@@ -387,23 +318,18 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm" onclick="agregarAlCarrito(${JSON.stringify(producto).replace(/"/g, "'")})">
+                                    <button class="btn btn-primary btn-sm" onclick="agregarAlCarrito(${JSON.stringify(producto).replace(/"/g, "'")}); $('#barcode').val('').focus();">
                                         <i class="fas fa-plus me-1"></i>Agregar
                                     </button>
                                 </td>
                             </tr>
                         `;
-                        $('#productos').html(contenido);
-                        
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Producto encontrado',
-                            text: `${producto.nombre} - $${producto.precio}`,
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
+                        // Combinar el contenido actual con el nuevo producto
+                        $('#productos').html(contenidoActual + nuevoProducto);
+                        // Agregar automáticamente al carrito
+                        agregarAlCarrito(producto);
+                        $('#barcode').val('').focus();
                     } else {
-                        $('#productos').html('');
                         Swal.fire({
                             icon: 'error',
                             title: 'Producto no encontrado',
@@ -448,11 +374,11 @@
         // Función para actualizar la UI del carrito
         function actualizarCarritoUI() {
             let contenido = '';
-            let subtotal = 0;
+            let total = 0;
             
             carrito.forEach(item => {
-                const total = item.precio * item.cantidad;
-                subtotal += total;
+                const subtotal = item.precio * item.cantidad;
+                total += subtotal;
                 
                 contenido += `
                     <div class="cart-item">
@@ -462,7 +388,7 @@
                                 <small class="text-muted">$${item.precio} x ${item.cantidad}</small>
                             </div>
                             <div class="d-flex align-items-center">
-                                <span class="fw-bold me-3">$${total.toFixed(2)}</span>
+                                <span class="fw-bold me-3">$${subtotal.toFixed(2)}</span>
                                 <button class="btn btn-sm btn-outline-danger" onclick="eliminarDelCarrito(${item.id})">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -472,31 +398,41 @@
                 `;
             });
 
-            const iva = subtotal * 0.16;
-            const total = subtotal + iva;
-
             $('#carritoItems').html(contenido);
-            $('#subtotal').text(`$${subtotal.toFixed(2)}`);
-            $('#iva').text(`$${iva.toFixed(2)}`);
             $('#total').text(`$${total.toFixed(2)}`);
+            calcularCambio();
         }
 
-        // Función para eliminar del carrito
-        function eliminarDelCarrito(productoId) {
-            carrito = carrito.filter(item => item.id !== productoId);
-            actualizarCarritoUI();
+        // Función para calcular el cambio
+        function calcularCambio() {
+            const total = parseFloat($('#total').text().replace('$', '')) || 0;
+            const dineroRecibido = parseFloat($('#dineroRecibido').val()) || 0;
+            const cambio = dineroRecibido - total;
+            
+            $('#cambio').text(`$${Math.max(0, cambio).toFixed(2)}`);
         }
 
-        // Función para procesar la venta
+        // Evento para calcular el cambio cuando se ingresa el dinero recibido
+        $('#dineroRecibido').on('input', calcularCambio);
+
+        // Modificar la función procesarVenta para validar el pago
         function procesarVenta() {
             if (carrito.length === 0) {
                 Swal.fire('Error', 'El carrito está vacío', 'error');
                 return;
             }
 
+            const total = parseFloat($('#total').text().replace('$', ''));
+            const dineroRecibido = parseFloat($('#dineroRecibido').val()) || 0;
+
+            if (dineroRecibido < total) {
+                Swal.fire('Error', 'El dinero recibido es insuficiente', 'error');
+                return;
+            }
+
             Swal.fire({
                 title: '¿Confirmar venta?',
-                text: 'Esta acción no se puede deshacer',
+                text: `Total: $${total.toFixed(2)}\nRecibido: $${dineroRecibido.toFixed(2)}\nCambio: $${(dineroRecibido - total).toFixed(2)}`,
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Sí, procesar',
@@ -551,180 +487,46 @@
             );
         }
 
-        // Búsqueda en tiempo real
-        $('#searchInput').on('input', function() {
-            const searchTerm = $(this).val().toLowerCase();
-            $('#productos tr').each(function() {
-                const texto = $(this).text().toLowerCase();
-                $(this).toggle(texto.indexOf(searchTerm) > -1);
-            });
-        });
+
 
         // Función de logout
         function logout() {
             window.location.href = "/proyecto/public/bd/logout.php";
         }
 
-        let isScanning = false;
-
+        // Evento para el botón de escanear y procesar código de barras
         $('#startScanner').click(function() {
-            const viewport = $('#interactive');
-            if (!isScanning) {
-                viewport.removeClass('d-none');
-                initQuagga();
-                $(this).html('<i class="fas fa-times me-1"></i>Detener');
-                viewport.append('<div class="scanning-overlay"><div class="scanning-line"></div></div>');
-            } else {
-                stopQuagga();
-                viewport.addClass('d-none');
-                viewport.find('.scanning-overlay').remove();
+            $('#barcode').focus();
+            $(this).html('<i class="fas fa-barcode me-1"></i>Escaneando...');
+            setTimeout(() => {
                 $(this).html('<i class="fas fa-barcode me-1"></i>Escanear');
-            }
-            isScanning = !isScanning;
+            }, 2000);
         });
 
-        function initQuagga() {
-            Quagga.init({
-                inputStream: {
-                    name: "Live",
-                    type: "LiveStream",
-                    target: document.querySelector("#interactive"),
-                    constraints: {
-                        facingMode: "environment",
-                        width: { min: 640 },
-                        height: { min: 480 },
-                        aspectRatio: { min: 1, max: 2 },
-                        focusMode: "continuous"
-                    },
-                },
-                locator: {
-                    patchSize: "medium",
-                    halfSample: true
-                },
-                numOfWorkers: navigator.hardwareConcurrency || 4,
-                decoder: {
-                    readers: [
-                        "ean_reader",
-                        "ean_8_reader",
-                        "code_128_reader",
-                        "code_39_reader",
-                        "upc_reader",
-                        "upc_e_reader"
-                    ],
-                    debug: {
-                        drawBoundingBox: true,
-                        showFrequency: true,
-                        drawScanline: true,
-                        showPattern: true
-                    }
-                },
-                locate: true
-            }, function(err) {
-                if (err) {
-                    console.error(err);
-                    let errorMessage = 'Error al iniciar el escáner';
-                    if (err.name === 'NotAllowedError') {
-                        errorMessage = 'Por favor, permite el acceso a la cámara para escanear códigos de barras';
-                    } else if (err.name === 'NotFoundError') {
-                        errorMessage = 'No se encontró ninguna cámara en el dispositivo';
-                    } else if (err.name === 'NotReadableError') {
-                        errorMessage = 'La cámara está en uso por otra aplicación';
-                    }
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error de cámara',
-                        text: errorMessage,
-                        confirmButtonColor: '#2c3e50'
-                    });
-                    stopQuagga();
-                    $('#interactive').addClass('d-none');
-                    $('#startScanner').html('<i class="fas fa-barcode me-1"></i>Escanear');
-                    isScanning = false;
-                    return;
-                }
-                Quagga.start();
-            });
+        // Variable para almacenar el temporizador
+        let barcodeTimer;
 
-            let lastResults = [];
-            const requiredSuccessfulScans = 3;
+        // Evento para procesar el código de barras cuando se ingresa
+        $('#barcode').on('input', function(e) {
+            const $this = $(this);
+            const barcode = $this.val();
 
-            Quagga.onDetected(function(result) {
-                let code = result.codeResult.code;
-                
-                // Visual feedback
-                $('#interactive').addClass('detection-success');
-                setTimeout(() => $('#interactive').removeClass('detection-success'), 200);
-
-                lastResults.push(code);
-                if (lastResults.length > requiredSuccessfulScans) {
-                    lastResults.shift();
-                }
-
-                // Check if we have enough consistent readings
-                if (lastResults.length === requiredSuccessfulScans && 
-                    lastResults.every(res => res === lastResults[0])) {
-                    
-                    $('#barcode').val(code);
-                    buscarProductoPorBarcode(code);
-                    stopQuagga();
-                    $('#interactive').addClass('d-none').find('.scanning-overlay').remove();
-                    $('#startScanner').html('<i class="fas fa-barcode me-1"></i>Escanear');
-                    isScanning = false;
-
-                    // Vibrate if available
-                    if (navigator.vibrate) {
-                        navigator.vibrate(200);
-                    }
-
-                    lastResults = [];
-                }
-            });
-        }
-
-        function stopQuagga() {
-            if (Quagga) {
-                Quagga.stop();
-                const canvas = document.querySelector('#interactive canvas');
-                if (canvas) {
-                    const ctx = canvas.getContext('2d');
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                }
+            // Limpiar el temporizador anterior si existe
+            if (barcodeTimer) {
+                clearTimeout(barcodeTimer);
             }
-        }
 
-        function buscarProductoPorBarcode(barcode) {
-            $.ajax({
-                url: '/proyecto/public/bd/get_productos.php',
-                method: 'GET',
-                data: { barcode: barcode },
-                dataType: 'json',
-                success: function(data) {
-                    if (data && data.length > 0) {
-                        const producto = data[0];
-                        agregarAlCarrito(producto);
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Producto encontrado',
-                            text: `${producto.nombre} - $${producto.precio}`,
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Producto no encontrado',
-                            text: 'No se encontró ningún producto con este código de barras',
-                            confirmButtonColor: '#2c3e50'
-                        });
-                    }
-                },
-                error: function(error) {
-                    console.error('Error al buscar producto:', error);
-                    Swal.fire('Error', 'No se pudo buscar el producto', 'error');
+            // Configurar un nuevo temporizador
+            barcodeTimer = setTimeout(() => {
+                if (barcode && barcode.length > 0) {
+                    buscarProductoPorBarcode(barcode);
+                    $this.val('');
+                    $('#startScanner').html('<i class="fas fa-barcode me-1"></i>Escanear');
                 }
-            });
-        }
+            }, 100); // Esperar 100ms después de la última entrada
+        });
 
+     
         // Inicialización
         $(document).ready(function() {
             cargarProductos();

@@ -208,38 +208,43 @@
                             <label class="form-label">Código de Barras</label>
                             <div class="input-group">
                                 <input type="text" id="barcode" name="barcode" class="form-control"
-                                    placeholder="Código de barras" readonly>
+                                    placeholder="Código de barras">
                                 <button type="button" class="btn btn-primary" id="startScanner">
                                     <i class="fas fa-barcode me-1"></i>Escanear
                                 </button>
                             </div>
+                            <div class="invalid-feedback">Por favor ingrese el código de barras</div>
                         </div>
-                        <div id="interactive" class="viewport d-none"></div>
 
                         <div class="mb-3">
                             <label class="form-label">Nombre</label>
                             <input type="text" id="productName" name="nombre" class="form-control"
                                 placeholder="Nombre del producto">
+                            <div class="invalid-feedback">Por favor ingrese el nombre del producto</div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Descripción</label>
                             <input type="text" id="descripcionProduct" name="descripcion" class="form-control"
                                 placeholder="Descripción del producto">
+                            <div class="invalid-feedback">Por favor ingrese la descripción del producto</div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Precio</label>
                             <input type="number" step="0.01" id="productPrice" name="precio" class="form-control"
                                 placeholder="Precio">
+                            <div class="invalid-feedback">Por favor ingrese el precio del producto</div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Stock</label>
                             <input type="number" id="productStock" name="stock" class="form-control"
                                 placeholder="Stock disponible">
+                            <div class="invalid-feedback">Por favor ingrese el stock del producto</div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Categoría</label>
                             <input type="text" id="CategoriaProduct" name="categoria" class="form-control"
                                 placeholder="Categoría">
+                            <div class="invalid-feedback">Por favor ingrese la categoría del producto</div>
                         </div>
                         <div class="text-end">
                             <button type="button" class="btn btn-secondary me-2" id="closeModalBtn">Cancelar</button>
@@ -309,25 +314,55 @@
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
+                    console.log(data); // Útil para verificar qué llega desde PHP
+
+                    // Verificamos si el backend devolvió un error
+                    if (!Array.isArray(data)) {
+                        if (data.error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Sesión expirada',
+                                text: data.error,
+                                confirmButtonText: 'Iniciar sesión'
+                            }).then(() => {
+                                window.location.href = 'login.html';
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error desconocido',
+                                text: 'No se pudo cargar la lista de productos.'
+                            });
+                        }
+                        return;
+                    }
+
+                    // Si data es un array, renderiza los productos
                     let contenido = '';
                     data.forEach(producto => {
                         contenido += `<tr>
-                            <td>${producto.id}</td>
-                            <td>${producto.nombre}</td>
-                            <td>${producto.descripcion}</td>
-                            <td>$${producto.precio}</td>
-                            <td>${producto.stock}</td>
-                            <td>${producto.categoria}</td>
-                            <td>${producto.barcode || '-'}</td>
-                            <td>
-                                <button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})">Eliminar</button>
-                            </td>
-                        </tr>`;
+                    <td>${producto.id}</td>
+                    <td>${producto.nombre}</td>
+                    <td>${producto.descripcion}</td>
+                    <td>$${producto.precio}</td>
+                    <td>${producto.stock}</td>
+                    <td>${producto.categoria}</td>
+                    <td>${producto.barcode || '-'}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})">Eliminar</button>
+                    </td>
+                </tr>`;
                     });
+
                     $('#productos').html(contenido);
                 },
                 error: function (error) {
                     console.error('Error al cargar productos:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de conexión',
+                        text: 'No se pudo conectar con el servidor.'
+                    });
                 }
             });
         }
@@ -339,6 +374,9 @@
             $('#formNuevoProducto').submit(function (e) {
                 e.preventDefault();
 
+                // Remover clases de validación previas
+                $('.form-control').removeClass('is-invalid');
+
                 const formData = {
                     barcode: $('#barcode').val(),
                     nombre: $('#productName').val().trim(),
@@ -348,11 +386,34 @@
                     categoria: $('#CategoriaProduct').val().trim()
                 };
 
-                if (!formData.nombre || !formData.precio || !formData.stock || !formData.categoria) {
-                    Swal.fire('Campos obligatorios', 'Por favor completa todos los campos requeridos',
-                        'warning');
-                    return;
+                // Validar campos y mostrar mensajes
+                let isValid = true;
+                if (!formData.barcode) {
+                    $('#barcode').addClass('is-invalid');
+                    isValid = false;
                 }
+                if (!formData.nombre) {
+                    $('#productName').addClass('is-invalid');
+                    isValid = false;
+                }
+                if (!formData.descripcion) {
+                    $('#descripcionProduct').addClass('is-invalid');
+                    isValid = false;
+                }
+                if (!formData.precio) {
+                    $('#productPrice').addClass('is-invalid');
+                    isValid = false;
+                }
+                if (!formData.stock) {
+                    $('#productStock').addClass('is-invalid');
+                    isValid = false;
+                }
+                if (!formData.categoria) {
+                    $('#CategoriaProduct').addClass('is-invalid');
+                    isValid = false;
+                }
+
+                if (!isValid) return;
 
                 $.ajax({
                     url: '/proyecto/public/bd/agregar_producto.php',
@@ -414,83 +475,167 @@
                 }
             });
         }
-    </script>
 
+
+        // Configuración del escáner de códigos de barras
+        let isScanning = false;
+
+        $('#startScanner').click(function () {
+            if (!isScanning) {
+                $('#barcode').focus();
+                $(this).html('<i class="fas fa-times me-1"></i>Detener');
+            } else {
+                $('#barcode').blur();
+                $(this).html('<i class="fas fa-barcode me-1"></i>Escanear');
+            }
+            isScanning = !isScanning;
+        });
+
+        $('#barcode').on('input', function(e) {
+            if (e.target.value.length > 0) {
+                const barcode = e.target.value;
+                // Aquí puedes agregar validación adicional del código de barras si es necesario
+                if (barcode.length >= 8) { // Longitud mínima típica de un código de barras
+                    $(this).val(barcode);
+                    isScanning = false;
+                    $('#startScanner').html('<i class="fas fa-barcode me-1"></i>Escanear');
+                }
+            }
+        });
+        function initQuagga() {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector("#interactive"),
+                    constraints: {
+                        facingMode: "environment",
+                        width: { min: 1280 },
+                        height: { min: 720 },
+                        aspectRatio: { min: 1, max: 2 },
+                        focusMode: "continuous",
+                        zoom: 2.0
+                    },
+                    area: {
+                        top: "0%",
+                        right: "0%",
+                        left: "0%",
+                        bottom: "0%"
+                    }
+                },
+                locator: {
+                    patchSize: "small",
+                    halfSample: false
+                },
+                numOfWorkers: navigator.hardwareConcurrency || 4,
+                frequency: 10,
+                decoder: {
+                    readers: [
+                        "ean_reader",
+                        "ean_8_reader",
+                        "code_128_reader",
+                        "code_39_reader",
+                        "upc_reader",
+                        "upc_e_reader"
+                    ],
+                    debug: {
+                        drawBoundingBox: true,
+                        showFrequency: true,
+                        drawScanline: true,
+                        showPattern: true
+                    },
+                    multiple: false
+                },
+                locate: true
+            }, function(err) {
+                if (err) {
+                    console.error(err);
+                    let errorMessage = 'Error al iniciar el escáner';
+                    if (err.name === 'NotAllowedError') {
+                        errorMessage = 'Por favor, permite el acceso a la cámara para escanear códigos de barras';
+                    } else if (err.name === 'NotFoundError') {
+                        errorMessage = 'No se encontró ninguna cámara en el dispositivo';
+                    } else if (err.name === 'NotReadableError') {
+                        errorMessage = 'La cámara está en uso por otra aplicación';
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de cámara',
+                        text: errorMessage,
+                        confirmButtonColor: '#2c3e50'
+                    });
+                    return;
+                }
+                Quagga.start();
+            });
+
+            Quagga.onDetected(function(result) {
+                if (result.codeResult.code) {
+                    $('#barcode').val(result.codeResult.code);
+                    $('#interactive').addClass('detection-success');
+                    setTimeout(() => {
+                        $('#interactive').removeClass('detection-success');
+                    }, 200);
+                    stopQuagga();
+                    $('#interactive').addClass('d-none');
+                    $('#startScanner').html('<i class="fas fa-barcode me-1"></i>Escanear');
+                    isScanning = false;
+                }
+            });
+        }
+
+        function drawResult(result) {
+            const canvas = document.querySelector('#interactive canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            result.boxes.forEach(box => {
+                ctx.strokeStyle = '#2c3e50';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(box[0][0], box[0][1]);
+                box.forEach((p, i) => {
+                    if (i > 0) ctx.lineTo(p[0], p[1]);
+                });
+                ctx.closePath();
+                ctx.stroke();
+            });
+        }
+
+        function stopQuagga() {
+            if (Quagga) {
+                Quagga.stop();
+                const canvas = document.querySelector('#interactive canvas');
+                if (canvas) {
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+        }
+
+        function logout() {
+            fetch('../bd/logout.php', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = 'login.html';
+                    } else {
+                        alert('Error al cerrar sesión.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ocurrió un error al cerrar sesión.');
+                });
+        }
+    </script>
 
 </html>
 
-<style>
-    .viewport {
-        position: relative;
-        width: 100%;
-        max-width: 640px;
-        height: 300px;
-        margin: 0 auto 1rem;
-    }
-
-    @media (max-width: 768px) {
-        .viewport {
-            height: 240px;
-        }
-
-        #interactive.viewport>canvas,
-        #interactive.viewport>video {
-            max-width: 100%;
-            width: 100%;
-        }
-
-        .modal-dialog {
-            margin: 0.5rem;
-            max-width: 100%;
-        }
-
-        .modal-body {
-            padding: 1rem;
-        }
-    }
-
-    .viewport>video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 8px;
-    }
-
-    .viewport>canvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
-
-    .viewport.d-none {
-        display: none !important;
-    }
-</style>
-
 <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
 <script>
-    // Configuración del escáner de códigos de barras
-    let isScanning = false;
-
-    $('#startScanner').click(function () {
-        const viewport = $('#interactive');
-        if (!isScanning) {
-            viewport.removeClass('d-none');
-            initQuagga();
-            $(this).html('<i class="fas fa-times me-1"></i>Detener');
-            // Add scanning overlay
-            viewport.append('<div class="scanning-overlay"><div class="scanning-line"></div></div>');
-        } else {
-            stopQuagga();
-            viewport.addClass('d-none');
-            viewport.find('.scanning-overlay').remove();
-            $(this).html('<i class="fas fa-barcode me-1"></i>Escanear');
-        }
-        isScanning = !isScanning;
-    });
-
     function initQuagga() {
         Quagga.init({
             inputStream: {
@@ -499,24 +644,25 @@
                 target: document.querySelector("#interactive"),
                 constraints: {
                     facingMode: "environment",
-                    width: {
-                        min: 640
-                    },
-                    height: {
-                        min: 480
-                    },
-                    aspectRatio: {
-                        min: 1,
-                        max: 2
-                    },
-                    focusMode: "continuous"
+                    width: { min: 1280 },
+                    height: { min: 720 },
+                    aspectRatio: { min: 1, max: 2 },
+                    focusMode: "continuous",
+                    zoom: 2.0
                 },
+                area: {
+                    top: "0%",
+                    right: "0%",
+                    left: "0%",
+                    bottom: "0%"
+                }
             },
             locator: {
-                patchSize: "medium",
-                halfSample: true
+                patchSize: "small",
+                halfSample: false
             },
             numOfWorkers: navigator.hardwareConcurrency || 4,
+            frequency: 10,
             decoder: {
                 readers: [
                     "ean_reader",
@@ -531,10 +677,11 @@
                     showFrequency: true,
                     drawScanline: true,
                     showPattern: true
-                }
+                },
+                multiple: false
             },
             locate: true
-        }, function (err) {
+        }, function(err) {
             if (err) {
                 console.error(err);
                 let errorMessage = 'Error al iniciar el escáner';
@@ -551,66 +698,22 @@
                     text: errorMessage,
                     confirmButtonColor: '#2c3e50'
                 });
-                stopQuagga();
-                $('#interactive').addClass('d-none');
-                $('#startScanner').html('<i class="fas fa-barcode me-1"></i>Escanear');
-                isScanning = false;
                 return;
             }
             Quagga.start();
         });
 
-        let lastResults = [];
-        const requiredSuccessfulScans = 3;
-
-        Quagga.onDetected(function (result) {
-            let code = result.codeResult.code;
-
-            // Visual feedback
-            $('#interactive').addClass('detection-success');
-            setTimeout(() => $('#interactive').removeClass('detection-success'), 200);
-
-            lastResults.push(code);
-            if (lastResults.length > requiredSuccessfulScans) {
-                lastResults.shift();
-            }
-
-            // Check if we have enough consistent readings
-            if (lastResults.length === requiredSuccessfulScans &&
-                lastResults.every(res => res === lastResults[0])) {
-
-                $('#barcode').val(code);
+        Quagga.onDetected(function(result) {
+            if (result.codeResult.code) {
+                $('#barcode').val(result.codeResult.code);
+                $('#interactive').addClass('detection-success');
+                setTimeout(() => {
+                    $('#interactive').removeClass('detection-success');
+                }, 200);
                 stopQuagga();
-                $('#interactive').addClass('d-none').find('.scanning-overlay').remove();
+                $('#interactive').addClass('d-none');
                 $('#startScanner').html('<i class="fas fa-barcode me-1"></i>Escanear');
                 isScanning = false;
-
-                // Vibrate if available
-                if (navigator.vibrate) {
-                    navigator.vibrate(200);
-                }
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Código detectado',
-                    text: code,
-                    timer: 1500,
-                    showConfirmButton: false,
-                    background: '#f8f9fa',
-                    iconColor: '#2c3e50'
-                });
-
-                lastResults = [];
-            }
-        });
-
-        // Add sound feedback
-        Quagga.onProcessed(function (result) {
-            if (result) {
-                if (result.boxes) {
-                    // Draw boxes for potential barcodes
-                    drawResult(result);
-                }
             }
         });
     }
@@ -643,7 +746,27 @@
             }
         }
     }
+
+    function logout() {
+        fetch('../bd/logout.php', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = 'login.html';
+                } else {
+                    alert('Error al cerrar sesión.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ocurrió un error al cerrar sesión.');
+            });
+    }
 </script>
+
+</html>
 
 <style>
     .viewport {
@@ -671,80 +794,28 @@
         height: 100%;
     }
 
-    .scanning-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(rgba(44, 62, 80, 0.1), rgba(44, 62, 80, 0.2));
-        pointer-events: none;
-    }
+    
 
-    .scanning-line {
-        position: absolute;
-        width: 100%;
-        height: 2px;
-        background: #2c3e50;
-        animation: scan 2s linear infinite;
-        box-shadow: 0 0 8px rgba(44, 62, 80, 0.5);
-    }
+    
+</style>
+<style>
+.invalid-feedback {
+    display: none;
+    color: #fd7e14;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
 
-    @keyframes scan {
-        0% {
-            top: 0;
-        }
+.form-control.is-invalid {
+    border-color: #fd7e14;
+}
 
-        50% {
-            top: 100%;
-        }
+.form-control.is-invalid:focus {
+    border-color: #fd7e14;
+    box-shadow: 0 0 0 0.25rem rgba(253, 126, 20, 0.25);
+}
 
-        100% {
-            top: 0;
-        }
-    }
-
-    .detection-success {
-        animation: success-flash 0.2s ease-out;
-    }
-
-    @keyframes success-flash {
-        0% {
-            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0);
-        }
-
-        50% {
-            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.5);
-        }
-
-        100% {
-            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0);
-        }
-    }
-
-    @media (max-width: 768px) {
-        .viewport {
-            height: 240px;
-            margin: 0.5rem auto;
-            border-radius: 8px;
-        }
-
-        #interactive.viewport>video {
-            width: 100% !important;
-            height: 100% !important;
-        }
-
-        .modal-dialog {
-            margin: 0.5rem;
-            max-width: 100%;
-        }
-
-        .modal-body {
-            padding: 1rem;
-        }
-
-        .scanning-line {
-            height: 1px;
-        }
-    }
+.form-control.is-invalid + .invalid-feedback {
+    display: block;
+}
 </style>
