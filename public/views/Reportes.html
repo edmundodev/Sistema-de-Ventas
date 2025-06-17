@@ -6,47 +6,48 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <link rel="icon" type="image/png" href="../css/img/ventasPro.png">
+    <link rel="icon" type="image/png" href="../css/img/ventasPro.png" />
     <title>Reporte de Ventas</title>
 </head>
-<body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen p-8">
-    <div class="max-w-7xl mx-auto" data-aos="fade-up">
+<body class="bg-white min-h-screen p-6" style="background: linear-gradient(to top right, #f9fafb 0%, #f0fdf4 100%)">
+    <div class="max-w-6xl mx-auto" data-aos="fade-up">
         <!-- Header -->
-        <div class="mb-8 text-center">
-            <h1 class="text-4xl font-bold text-indigo-800 mb-2">Dashboard de Ventas</h1>
-            <p class="text-gray-600">Análisis de ventas por categoría</p>
+        <div class="mb-10 text-center">
+            <h1 class="text-4xl font-bold text-gray-900 mb-1">📈 Reporte de Ventas</h1>
+            <p class="text-gray-600 text-lg">Análisis por categoría en tiempo real</p>
         </div>
 
-        <!-- Card principal -->
-        <div class="bg-white rounded-2xl shadow-xl p-8 backdrop-blur-sm bg-white/90">
-            <!-- Filtros y controles -->
-            <div class="flex flex-wrap gap-4 mb-6 items-center justify-between">
-                <div class="flex gap-4">
-                    <button id="viewBar" class="px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-all">
-                        <i class="fas fa-chart-bar"></i> Barras
+        <!-- Card -->
+        <div class="bg-white rounded-3xl shadow-lg p-8 border border-gray-200">
+            <!-- Controles -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div class="flex gap-3">
+                    <button id="viewBar" class="px-4 py-2 rounded-full bg-green-800 text-white font-medium shadow hover:bg-green-900 transition">
+                        📊 Barras
                     </button>
-                    <button id="viewPie" class="px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-all">
-                        <i class="fas fa-chart-pie"></i> Circular
+                    <button id="viewPie" class="px-4 py-2 rounded-full bg-green-700 text-white font-medium shadow hover:bg-green-800 transition">
+                        🥧 Circular
                     </button>
-                    <button  class="px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-all">
-                        <a href="productos.html">.</a>
-                    </button>
+                    <a href="componentes.html" class="px-4 py-2 rounded-full bg-gray-100 text-gray-800 font-medium shadow hover:bg-gray-200 transition">
+                        🔙 Regresar
+                    </a>
                 </div>
-                <div class="text-sm text-gray-500">
-                    <i class="fas fa-sync-alt animate-spin"></i> Actualización en tiempo real
+                <div class="text-sm text-gray-500 flex items-center gap-2">
+                    <span class="animate-spin inline-block w-4 h-4 border-2 border-green-700 border-t-transparent rounded-full"></span>
+                    <span>Actualizando cada 5 segundos</span>
                 </div>
             </div>
 
-            <!-- Contenedor de la gráfica -->
-            <div class="relative rounded-xl bg-gradient-to-br from-white to-indigo-50 p-4">
-                <canvas id="graficaVentas" class="w-full" style="height: 400px;"></canvas>
+            <!-- Gráfica -->
+            <div class="bg-gray-50 p-6 rounded-2xl shadow-inner">
+                <canvas id="graficaVentas" class="w-full" style="height: 420px;"></canvas>
             </div>
 
-            <!-- Estadísticas adicionales -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8" id="stats">
-                <!-- Se llenará dinámicamente -->
+            <!-- Estadísticas -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 text-center" id="stats">
+                <!-- Se llena dinámicamente -->
             </div>
         </div>
     </div>
@@ -60,36 +61,44 @@
         const configuracionBase = {
             plugins: {
                 datalabels: {
-                    color: '#4338ca',
+                    color: '#166534', // verde oscuro acento
                     font: {
-                        weight: 'bold'
+                        weight: 'bold',
+                        size: 14
                     },
-                    formatter: (value) => `S/ ${value}`
+                    formatter: value => `S/ ${value.toFixed(2)}`
                 },
                 legend: {
                     position: 'bottom',
                     labels: {
                         usePointStyle: true,
-                        padding: 20,
+                        padding: 25,
                         font: {
-                            size: 12
-                        }
+                            size: 14,
+                            family: '"Inter", sans-serif'
+                        },
+                        color: '#374151' // gris oscuro
                     }
+                },
+                tooltip: {
+                    backgroundColor: '#166534', // verde oscuro acento
+                    titleColor: '#d1fae5', // verde claro para contraste
+                    bodyColor: '#d1fae5',
+                    borderColor: '#4ade80', // verde brillante
+                    borderWidth: 1
                 }
             },
             animation: {
-                duration: 1000,
-                easing: 'easeInOutQuart'
+                duration: 1200,
+                easing: 'easeOutQuart'
             }
         };
 
         async function obtenerDatos() {
             const response = await fetch('/proyecto/public/bd/obtener_ventas_categoria.php');
             const data = await response.json();
-
             const categorias = data.map(item => item.categoria);
             const totales = data.map(item => parseFloat(item.total_ventas));
-
             actualizarEstadisticas(data);
             return { categorias, totales };
         }
@@ -99,17 +108,17 @@
             const maxCategoria = data.reduce((a, b) => parseFloat(a.total_ventas) > parseFloat(b.total_ventas) ? a : b);
 
             document.getElementById('stats').innerHTML = `
-                <div class="p-4 rounded-lg bg-indigo-50 border border-indigo-100">
-                    <h3 class="text-lg font-semibold text-indigo-800">Total Ventas</h3>
-                    <p class="text-2xl font-bold text-indigo-600">S/ ${totalVentas.toFixed(2)}</p>
+                <div class="p-5 bg-white border border-green-200 rounded-xl shadow">
+                    <h3 class="text-lg font-semibold text-green-800">💰 Total Ventas</h3>
+                    <p class="text-2xl font-bold text-gray-900 mt-1">S/ ${totalVentas.toFixed(2)}</p>
                 </div>
-                <div class="p-4 rounded-lg bg-purple-50 border border-purple-100">
-                    <h3 class="text-lg font-semibold text-purple-800">Categoría Top</h3>
-                    <p class="text-2xl font-bold text-purple-600">${maxCategoria.categoria}</p>
+                <div class="p-5 bg-white border border-green-300 rounded-xl shadow">
+                    <h3 class="text-lg font-semibold text-green-800">🏆 Categoría Top</h3>
+                    <p class="text-2xl font-bold text-gray-900 mt-1">${maxCategoria.categoria}</p>
                 </div>
-                <div class="p-4 rounded-lg bg-blue-50 border border-blue-100">
-                    <h3 class="text-lg font-semibold text-blue-800">Categorías</h3>
-                    <p class="text-2xl font-bold text-blue-600">${data.length}</p>
+                <div class="p-5 bg-white border border-green-200 rounded-xl shadow">
+                    <h3 class="text-lg font-semibold text-green-800">📦 Total Categorías</h3>
+                    <p class="text-2xl font-bold text-gray-900 mt-1">${data.length}</p>
                 </div>
             `;
         }
@@ -117,11 +126,13 @@
         async function actualizarGrafico() {
             const { categorias, totales } = await obtenerDatos();
             const colores = [
-                'rgba(99, 102, 241, 0.8)',
-                'rgba(168, 85, 247, 0.8)',
-                'rgba(59, 130, 246, 0.8)',
-                'rgba(236, 72, 153, 0.8)',
-                'rgba(79, 70, 229, 0.8)'
+                'rgba(22, 101, 52, 0.7)',   // verde oscuro
+                'rgba(34, 139, 69, 0.7)',   // verde medio
+                'rgba(74, 222, 128, 0.7)',  // verde claro
+                'rgba(16, 185, 129, 0.7)',  // verde esmeralda
+                'rgba(22, 101, 52, 0.7)',   // verde oscuro repetido para relleno
+                'rgba(132, 204, 22, 0.7)',  // verde lima claro
+                'rgba(5, 150, 105, 0.7)'    // verde azulado
             ];
 
             const config = {
@@ -132,7 +143,7 @@
                         label: 'Ventas por Categoría',
                         data: totales,
                         backgroundColor: colores,
-                        borderColor: colores.map(color => color.replace('0.8', '1')),
+                        borderColor: colores.map(c => c.replace('0.7', '1')),
                         borderWidth: 2
                     }]
                 },
@@ -143,20 +154,25 @@
                     scales: tipoGrafica === 'bar' ? {
                         y: {
                             beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0,0,0,0.1)'
-                            },
+                            grid: { color: 'rgba(0,0,0,0.05)' },
                             ticks: {
-                                callback: value => `S/ ${value}`
+                                callback: value => `S/ ${value.toFixed(2)}`,
+                                color: '#374151', // gris oscuro
+                                font: { size: 12, family: 'Inter, sans-serif' }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                color: '#374151', // gris oscuro
+                                font: { size: 12, family: 'Inter, sans-serif' }
                             }
                         }
                     } : {}
                 }
             };
 
-            if (grafica) {
-                grafica.destroy();
-            }
+            if (grafica) grafica.destroy();
             grafica = new Chart(ctx, config);
         }
 
@@ -170,10 +186,7 @@
             actualizarGrafico();
         });
 
-        // Inicializar AOS
         AOS.init();
-
-        // Iniciar la gráfica y actualizaciones
         actualizarGrafico();
         setInterval(actualizarGrafico, 5000);
     </script>

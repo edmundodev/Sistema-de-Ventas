@@ -288,7 +288,6 @@
         }
 
         // Modificar la función buscarProductoPorBarcode para mostrar solo el producto escaneado
-        // Modificar la función buscarProductoPorBarcode para mostrar solo el producto escaneado
         function buscarProductoPorBarcode(barcode) {
             $.ajax({
                 url: '/proyecto/public/bd/get_productos.php',
@@ -318,10 +317,17 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm" onclick="agregarAlCarrito(${JSON.stringify(producto).replace(/"/g, "'")}); $('#barcode').val('').focus();">
-                                        <i class="fas fa-plus me-1"></i>Agregar
-                                    </button>
+                                    <div class="btn-group">
+                                        <button class="btn btn-primary btn-sm me-2" onclick="agregarAlCarrito(${JSON.stringify(producto).replace(/"/g, "'")}); $('#barcode').val('').focus();">
+                                            <i class="fas fa-plus me-1"></i>Agregar
+                                        </button>
+                                        <button class="btn btn-warning btn-sm" onclick="agregarAlCarritoMayoreo(${JSON.stringify(producto).replace(/"/g, "'")}); $('#barcode').val('').focus();">
+                                            <i class="fas fa-hand-holding-dollar me-1"></i>Mayoreo
+                                        </button>
+                                    </div>
                                 </td>
+
+
                             </tr>
                         `;
                         // Combinar el contenido actual con el nuevo producto
@@ -369,6 +375,49 @@
             }
             
             actualizarCarritoUI();
+        }
+
+        // Función para agregar al carrito con precio mayoreo
+        function agregarAlCarritoMayoreo(producto) {
+            const itemExistente = carrito.find(item => item.id === producto.id);
+            
+            if (itemExistente) {
+                if (itemExistente.cantidad < producto.stock) {
+                    // Reemplazar el precio con el precio de mayoreo y aumentar la cantidad
+                    itemExistente.precio = producto.precio_mayoreo;
+                    itemExistente.cantidad++;
+                } else {
+                    Swal.fire('Advertencia', 'No hay suficiente stock', 'warning');
+                    return;
+                }
+            } else {
+                if (producto.stock > 0) {
+                    // Agregar nuevo producto con precio de mayoreo
+                    carrito.push({
+                        ...producto,
+                        precio: producto.precio_mayoreo,
+                        cantidad: 1
+                    });
+                } else {
+                    Swal.fire('Advertencia', 'Producto sin stock', 'warning');
+                    return;
+                }
+            }
+            
+            actualizarCarritoUI();
+        }
+
+        // Función para eliminar un producto individual del carrito
+        function eliminarDelCarrito(productoId) {
+            const itemIndex = carrito.findIndex(item => item.id === productoId);
+            if (itemIndex !== -1) {
+                if (carrito[itemIndex].cantidad > 1) {
+                    carrito[itemIndex].cantidad--;
+                } else {
+                    carrito.splice(itemIndex, 1);
+                }
+                actualizarCarritoUI();
+            }
         }
 
         // Función para actualizar la UI del carrito

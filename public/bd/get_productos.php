@@ -23,12 +23,16 @@ $barcode = isset($_GET['barcode']) ? $_GET['barcode'] : null;
 
 if ($barcode) {
     // Buscar producto por código de barras
-    $sql = "SELECT id, barcode, nombre, descripcion, precio, stock, categoria FROM productos WHERE barcode = ? AND usuario_id = ?";
+    $sql = "SELECT id, barcode, nombre, descripcion, precio, precio_compra, precio_mayoreo, stock, categoria, codigo_clave 
+            FROM productos 
+            WHERE barcode = ? AND usuario_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("si", $barcode, $usuario_id);
 } else {
-    // Obtener todos los productos (mantener para compatibilidad)
-    $sql = "SELECT id, barcode, nombre, descripcion, precio, stock, categoria FROM productos WHERE usuario_id = ?";
+    // Obtener todos los productos
+    $sql = "SELECT id, barcode, nombre, descripcion, precio, precio_compra, precio_mayoreo, stock, categoria, codigo_clave 
+            FROM productos 
+            WHERE usuario_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $usuario_id);
 }

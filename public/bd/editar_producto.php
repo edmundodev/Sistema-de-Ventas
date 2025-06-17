@@ -2,50 +2,43 @@
 session_start();
 header('Content-Type: application/json');
 
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db = "usuarios";
-
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) {
-    echo json_encode(["error" => "Error de conexión: " . $conn->connect_error]);
-    exit;
-}
-
 if (!isset($_SESSION['usuario_id'])) {
-    echo json_encode(["error" => "Usuario no autenticado"]);
+    echo json_encode(['success' => false, 'error' => 'Sesión expirada.']);
     exit;
 }
 
 $usuario_id = $_SESSION['usuario_id'];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id = $_POST['id'] ?? null;
-    $nombre = $_POST['nombre'] ?? '';
-    $descripcion = $_POST['descripcion'] ?? '';
-    $precio = $_POST['precio'] ?? '';
-    $stock = $_POST['stock'] ?? '';
-    $categoria = $_POST['categoria'] ?? '';
+$host = "localhost";
+$user = "root";
+$pass = "";
+$db = "usuarios"; // Ajusta si tu DB tiene otro nombre
 
-    if (!$id || !$nombre || !$precio || !$stock || !$categoria) {
-        echo json_encode(["error" => "Faltan datos requeridos"]);
-        exit;
-    }
-
-    $sql = "UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, stock = ?, categoria = ? 
-            WHERE id = ? AND usuario_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssdisii", $nombre, $descripcion, $precio, $stock, $categoria, $id, $usuario_id);
-
-    if ($stmt->execute()) {
-        echo json_encode(["success" => true]);
-    } else {
-        echo json_encode(["error" => "Error al actualizar: " . $stmt->error]);
-    }
-
-    $stmt->close();
-    $conn->close();
-} else {
-    echo json_encode(["error" => "Método no permitido"]);
+$conn = new mysqli($host, $user, $pass, $db);
+if ($conn->connect_error) {
+    echo json_encode(['success' => false, 'error' => 'Error de conexión a la base de datos.']);
+    exit;
 }
+
+$id = $_POST['id'];
+$barcode = $_POST['barcode'];
+$nombre = $_POST['nombre'];
+$descripcion = $_POST['descripcion'];
+$precio = $_POST['precio'];
+$stock = $_POST['stock'];
+$categoria = $_POST['categoria'];
+$precio_compra = $_POST['precio_compra'];
+$precio_mayoreo = $_POST['precio_mayoreo'];
+$codigo_clave = $_POST['codigo_clave'];
+
+$stmt = $conn->prepare("UPDATE productos SET barcode=?, nombre=?, descripcion=?, precio=?, stock=?, categoria=?, precio_compra=?, precio_mayoreo=?, codigo_clave=? WHERE id=? AND usuario_id=?");
+$stmt->bind_param("sssddsssdii", $barcode, $nombre, $descripcion, $precio, $stock, $categoria, $precio_compra, $precio_mayoreo, $codigo_clave, $id, $usuario_id);
+
+if ($stmt->execute()) {
+    echo json_encode(['success' => true, 'message' => 'Producto actualizado correctamente.']);
+} else {
+    echo json_encode(['success' => false, 'error' => 'Error al actualizar el producto.']);
+}
+
+$stmt->close();
+$conn->close();
