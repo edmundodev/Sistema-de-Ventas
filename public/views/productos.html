@@ -167,7 +167,7 @@
                 <span class="input-group-text bg-white text-primary">
                     <i class="fas fa-search"></i>
                 </span>
-                <input type="text" class="form-control" placeholder="Buscar productos...">
+                <input type="text" class="form-control" id="searchInput" placeholder="Buscar por código de barras, nombre o código clave...">
             </div>
         </div>
 
@@ -239,12 +239,14 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Precio Compra</label>
-                            <input type="number" step="0.01" id="precioCompra" name="precio_compra" class="form-control" placeholder="Precio de compra">
+                            <input type="number" step="0.01" id="precioCompra" name="precio_compra" class="form-control"
+                                placeholder="Precio de compra">
                             <div class="invalid-feedback">Por favor ingrese el precio de compra</div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Precio Mayoreo</label>
-                            <input type="number" step="0.01" id="precioMayoreo" name="precio_mayoreo" class="form-control" placeholder="Precio de mayoreo">
+                            <input type="number" step="0.01" id="precioMayoreo" name="precio_mayoreo"
+                                class="form-control" placeholder="Precio de mayoreo">
                             <div class="invalid-feedback">Por favor ingrese el precio de mayoreo</div>
                         </div>
                         <div class="mb-3">
@@ -261,7 +263,8 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Código Clave</label>
-                            <input type="text" id="codigoClave" name="codigo_clave" class="form-control" placeholder="Código clave">
+                            <input type="text" id="codigoClave" name="codigo_clave" class="form-control"
+                                placeholder="Código clave">
                             <div class="invalid-feedback">Por favor ingrese el código clave</div>
                         </div>
                         <div class="text-end">
@@ -275,44 +278,6 @@
     </div>
 
 
-
-    <!-- Modal: Vender Producto -->
-    <div class="modal fade" id="modalVenta" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">Vender Producto</h5>
-                    <button type="button" class="btn-close btn-close-white" id="cerrarVenta"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="mb-3">
-                            <label class="form-label">Nombre</label>
-                            <input type="text" id="ventaNombre" readonly class="form-control bg-light">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Descripción</label>
-                            <input type="text" id="ventaDescripcion" readonly class="form-control bg-light">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Precio</label>
-                            <input type="text" id="ventaPrecio" readonly class="form-control bg-light">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Cantidad</label>
-                            <input type="number" id="ventaCantidad" class="form-control"
-                                placeholder="Cantidad a vender">
-                        </div>
-                        <input type="hidden" id="ventaID">
-                        <div class="text-end">
-                            <button type="button" class="btn btn-secondary me-2" id="cerrarVentaBtn">Cancelar</button>
-                            <button type="submit" class="btn btn-success">Confirmar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -512,6 +477,129 @@
             });
         }
 
+        function editarProducto(id) {
+            // Obtener los datos del producto por su ID
+            $.ajax({
+                url: '/proyecto/public/bd/get_producto_por_id.php',
+                method: 'POST',
+                data: {
+                    id: id
+                },
+                dataType: 'json',
+                success: function (producto) {
+                    if (producto.success) {
+                        // Llenar el formulario con los datos del producto
+                        $('#barcode').val(producto.data.barcode);
+                        $('#productName').val(producto.data.nombre);
+                        $('#descripcionProduct').val(producto.data.descripcion);
+                        $('#productPrice').val(producto.data.precio);
+                        $('#precioCompra').val(producto.data.precio_compra);
+                        $('#precioMayoreo').val(producto.data.precio_mayoreo);
+                        $('#productStock').val(producto.data.stock);
+                        $('#CategoriaProduct').val(producto.data.categoria);
+                        $('#codigoClave').val(producto.data.codigo_clave);
+
+                        // Cambiar el título del modal
+                        $('.modal-title').text('Editar Producto');
+
+                        // Modificar el formulario para la edición
+                        $('#formNuevoProducto').off('submit').on('submit', function (e) {
+                            e.preventDefault();
+
+                            // Remover clases de validación previas
+                            $('.form-control').removeClass('is-invalid');
+
+                            const formData = {
+                                id: id,
+                                barcode: $('#barcode').val(),
+                                nombre: $('#productName').val().trim(),
+                                descripcion: $('#descripcionProduct').val().trim(),
+                                precio: $('#productPrice').val(),
+                                precio_compra: $('#precioCompra').val(),
+                                precio_mayoreo: $('#precioMayoreo').val(),
+                                stock: $('#productStock').val(),
+                                categoria: $('#CategoriaProduct').val().trim(),
+                                codigo_clave: $('#codigoClave').val().trim()
+                            };
+
+                            // Validar campos
+                            let isValid = true;
+                            if (!formData.barcode) {
+                                $('#barcode').addClass('is-invalid');
+                                isValid = false;
+                            }
+                            if (!formData.nombre) {
+                                $('#productName').addClass('is-invalid');
+                                isValid = false;
+                            }
+                            if (!formData.descripcion) {
+                                $('#descripcionProduct').addClass('is-invalid');
+                                isValid = false;
+                            }
+                            if (!formData.precio) {
+                                $('#productPrice').addClass('is-invalid');
+                                isValid = false;
+                            }
+                            if (!formData.precio_compra) {
+                                $('#precioCompra').addClass('is-invalid');
+                                isValid = false;
+                            }
+                            if (!formData.precio_mayoreo) {
+                                $('#precioMayoreo').addClass('is-invalid');
+                                isValid = false;
+                            }
+                            if (!formData.stock) {
+                                $('#productStock').addClass('is-invalid');
+                                isValid = false;
+                            }
+                            if (!formData.categoria) {
+                                $('#CategoriaProduct').addClass('is-invalid');
+                                isValid = false;
+                            }
+
+                            if (!isValid) return;
+
+                            // Enviar datos actualizados al servidor
+                            $.ajax({
+                                url: '/proyecto/public/bd/editar_producto.php',
+                                method: 'POST',
+                                data: formData,
+                                dataType: 'json',
+                                success: function (respuesta) {
+                                    if (respuesta.success) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Éxito',
+                                            text: respuesta.message,
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        });
+                                        myModal.hide();
+                                        $('#formNuevoProducto')[0].reset();
+                                        cargarProductos();
+                                    } else {
+                                        Swal.fire('Error', respuesta.error, 'error');
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire('Error',
+                                        'No se pudo conectar al servidor', 'error');
+                                }
+                            });
+                        });
+
+                        // Mostrar el modal
+                        myModal.show();
+                    } else {
+                        Swal.fire('Error', producto.error, 'error');
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'No se pudo conectar al servidor', 'error');
+                }
+            });
+        }
+
 
         // Configuración del escáner de códigos de barras
         let isScanning = false;
@@ -527,7 +615,7 @@
             isScanning = !isScanning;
         });
 
-        $('#barcode').on('input', function(e) {
+        $('#barcode').on('input', function (e) {
             if (e.target.value.length > 0) {
                 const barcode = e.target.value;
                 // Aquí puedes agregar validación adicional del código de barras si es necesario
@@ -538,6 +626,7 @@
                 }
             }
         });
+
         function initQuagga() {
             Quagga.init({
                 inputStream: {
@@ -546,9 +635,16 @@
                     target: document.querySelector("#interactive"),
                     constraints: {
                         facingMode: "environment",
-                        width: { min: 1280 },
-                        height: { min: 720 },
-                        aspectRatio: { min: 1, max: 2 },
+                        width: {
+                            min: 1280
+                        },
+                        height: {
+                            min: 720
+                        },
+                        aspectRatio: {
+                            min: 1,
+                            max: 2
+                        },
                         focusMode: "continuous",
                         zoom: 2.0
                     },
@@ -583,12 +679,13 @@
                     multiple: false
                 },
                 locate: true
-            }, function(err) {
+            }, function (err) {
                 if (err) {
                     console.error(err);
                     let errorMessage = 'Error al iniciar el escáner';
                     if (err.name === 'NotAllowedError') {
-                        errorMessage = 'Por favor, permite el acceso a la cámara para escanear códigos de barras';
+                        errorMessage =
+                            'Por favor, permite el acceso a la cámara para escanear códigos de barras';
                     } else if (err.name === 'NotFoundError') {
                         errorMessage = 'No se encontró ninguna cámara en el dispositivo';
                     } else if (err.name === 'NotReadableError') {
@@ -605,7 +702,7 @@
                 Quagga.start();
             });
 
-            Quagga.onDetected(function(result) {
+            Quagga.onDetected(function (result) {
                 if (result.codeResult.code) {
                     $('#barcode').val(result.codeResult.code);
                     $('#interactive').addClass('detection-success');
@@ -680,9 +777,16 @@
                 target: document.querySelector("#interactive"),
                 constraints: {
                     facingMode: "environment",
-                    width: { min: 1280 },
-                    height: { min: 720 },
-                    aspectRatio: { min: 1, max: 2 },
+                    width: {
+                        min: 1280
+                    },
+                    height: {
+                        min: 720
+                    },
+                    aspectRatio: {
+                        min: 1,
+                        max: 2
+                    },
                     focusMode: "continuous",
                     zoom: 2.0
                 },
@@ -717,7 +821,7 @@
                 multiple: false
             },
             locate: true
-        }, function(err) {
+        }, function (err) {
             if (err) {
                 console.error(err);
                 let errorMessage = 'Error al iniciar el escáner';
@@ -739,7 +843,7 @@
             Quagga.start();
         });
 
-        Quagga.onDetected(function(result) {
+        Quagga.onDetected(function (result) {
             if (result.codeResult.code) {
                 $('#barcode').val(result.codeResult.code);
                 $('#interactive').addClass('detection-success');
@@ -800,6 +904,75 @@
                 alert('Ocurrió un error al cerrar sesión.');
             });
     }
+
+    // Función para buscar productos
+    function buscarProductos(termino) {
+        const formData = new FormData();
+        formData.append('termino', termino);
+
+        fetch('../bd/buscar_productos.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const tbody = document.getElementById('productos');
+                tbody.innerHTML = '';
+                
+                data.data.forEach(producto => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${producto.id}</td>
+                            <td>${producto.nombre}</td>
+                            <td>${producto.descripcion}</td>
+                            <td>$${producto.precio}</td>
+                            <td>$${producto.precio_compra}</td>
+                            <td>$${producto.precio_mayoreo}</td>
+                            <td>${producto.stock}</td>
+                            <td>${producto.categoria}</td>
+                            <td>${producto.barcode}</td>
+                            <td>${producto.codigo_clave}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-primary" onclick="editarProducto(${producto.id})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-danger" onclick="eliminarProducto(${producto.id})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error al buscar productos'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error al conectar con el servidor'
+            });
+        });
+    }
+
+    // Inicializar la búsqueda en tiempo real
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const termino = e.target.value.trim();
+        if (termino === '') {
+            cargarProductos(); // Si el campo está vacío, cargar todos los productos
+        } else {
+            buscarProductos(termino);
+        }
+    });
 </script>
 
 </html>
@@ -829,29 +1002,25 @@
         width: 100%;
         height: 100%;
     }
-
-    
-
-    
 </style>
 <style>
-.invalid-feedback {
-    display: none;
-    color: #fd7e14;
-    font-size: 0.875em;
-    margin-top: 0.25rem;
-}
+    .invalid-feedback {
+        display: none;
+        color: #fd7e14;
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+    }
 
-.form-control.is-invalid {
-    border-color: #fd7e14;
-}
+    .form-control.is-invalid {
+        border-color: #fd7e14;
+    }
 
-.form-control.is-invalid:focus {
-    border-color: #fd7e14;
-    box-shadow: 0 0 0 0.25rem rgba(253, 126, 20, 0.25);
-}
+    .form-control.is-invalid:focus {
+        border-color: #fd7e14;
+        box-shadow: 0 0 0 0.25rem rgba(253, 126, 20, 0.25);
+    }
 
-.form-control.is-invalid + .invalid-feedback {
-    display: block;
-}
+    .form-control.is-invalid+.invalid-feedback {
+        display: block;
+    }
 </style>
