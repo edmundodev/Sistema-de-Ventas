@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,7 +20,7 @@
 
         .navbar {
             background: linear-gradient(90deg, #2c3e50 0%, #34495e 100%);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .card {
@@ -27,7 +28,7 @@
             backdrop-filter: blur(10px);
             border: none;
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .stats-card {
@@ -79,7 +80,7 @@
         .btn-primary:hover {
             background: #34495e;
             transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .cart-item {
@@ -100,12 +101,14 @@
             .container {
                 padding: 1rem;
             }
+
             .stats-card {
                 margin-bottom: 1rem;
             }
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark mb-4">
         <div class="container">
@@ -183,15 +186,17 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <div class="stats-icon me-3">
-                                <i class="fas fa-chart-line"></i>
+                                <i class="fas fa-cash-register"></i>
                             </div>
                             <div>
-                                <h6 class="mb-0 text-muted">Promedio Venta</h6>
-                                <h3 class="mb-0" id="promedioVenta">$0.00</h3>
+                                <h6 class="mb-0 text-muted">Corte de Caja</h6>
+                                <button onclick="realizarCorteCaja()" class="btn btn-success btn-sm mt-2">
+                                    <i class="fas fa-calculator me-1"></i>Realizar Corte
+                                </button>
                             </div>
                         </div>
                         <div class="progress" style="height: 4px;">
-                            <div class="progress-bar bg-warning" style="width: 50%"></div>
+                            <div class="progress-bar bg-success" style="width: 50%"></div>
                         </div>
                     </div>
                 </div>
@@ -206,7 +211,8 @@
                         <h5 class="card-title mb-3">Escanear Producto</h5>
                         <div class="mb-3">
                             <div class="input-group">
-                                <input type="text" id="barcode" class="form-control" placeholder="Código de barras" autofocus>
+                                <input type="text" id="barcode" class="form-control" placeholder="Código de barras"
+                                    autofocus>
                                 <button type="button" class="btn btn-primary" id="startScanner">
                                     <i class="fas fa-barcode me-1"></i>Escanear
                                 </button>
@@ -256,7 +262,8 @@
                                 <label for="dineroRecibido" class="form-label">Dinero Recibido</label>
                                 <div class="input-group">
                                     <span class="input-group-text">$</span>
-                                    <input type="number" class="form-control" id="dineroRecibido" placeholder="0.00" step="0.01" min="0">
+                                    <input type="number" class="form-control" id="dineroRecibido" placeholder="0.00"
+                                        step="0.01" min="0">
                                 </div>
                             </div>
                             <div class="d-flex justify-content-between mb-3">
@@ -275,11 +282,83 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        function realizarCorteCaja() {
+            fetch('../bd/registrar_corte_caja.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const totalDia = parseFloat(data.total_dia) || 0;
+                        // Limpiar datos del día
+                        localStorage.removeItem('carrito');
+                        localStorage.removeItem('totalVentasDia');
+                        localStorage.removeItem('productosVendidosHoy');
+                        localStorage.removeItem('clientesAtendidosHoy');
+                        
+                        carrito = [];
+                        totalVentasDia = 0;
+                        productosVendidosHoy = 0;
+                        clientesAtendidosHoy = 0;
+                        
+                        actualizarCarritoUI();
+                        actualizarEstadisticas();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Corte de Caja Realizado',
+                            html: `
+                        <div class="text-left">
+                            <p class="mb-2"><strong>Total de Ventas del Día:</strong></p>
+                            <h3 class="text-success mb-3">$${totalDia.toFixed(2)}</h3>
+                        </div>
+                    `,
+                            confirmButtonColor: '#2c3e50'
+                        }).then(() => {
+                            // Redirigir a la página de reportes para ver la gráfica actualizada
+                            window.location.href = 'Reportes.html';
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.error || 'Error al realizar el corte de caja',
+                            confirmButtonColor: '#2c3e50'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error al conectar con el servidor',
+                        confirmButtonColor: '#2c3e50'
+                    });
+                });
+        }
+
+
         // Variables globales
-        let carrito = [];
-        let totalVentasDia = 0;
-        let productosVendidosHoy = 0;
-        let clientesAtendidosHoy = 0;
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        let totalVentasDia = parseFloat(localStorage.getItem('totalVentasDia')) || 0;
+        let productosVendidosHoy = parseInt(localStorage.getItem('productosVendidosHoy')) || 0;
+        let clientesAtendidosHoy = parseInt(localStorage.getItem('clientesAtendidosHoy')) || 0;
+
+        // Cargar estadísticas al iniciar
+        window.addEventListener('load', function() {
+            actualizarCarritoUI();
+            actualizarEstadisticas();
+            // Obtener total de ventas del día desde el servidor
+            fetch('../bd/registrar_corte_caja.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        totalVentasDia = parseFloat(data.total_dia) || 0;
+                        localStorage.setItem('totalVentasDia', totalVentasDia);
+                        actualizarEstadisticas();
+                    }
+                })
+                .catch(error => console.error('Error al cargar ventas del día:', error));
+        });
 
         // Función para cargar productos (modificada para solo mostrar productos escaneados)
         function cargarProductos() {
@@ -292,9 +371,11 @@
             $.ajax({
                 url: '/proyecto/public/bd/get_productos.php',
                 method: 'GET',
-                data: { barcode: barcode },
+                data: {
+                    barcode: barcode
+                },
                 dataType: 'json',
-                success: function(data) {
+                success: function (data) {
                     if (data && data.length > 0) {
                         const producto = data[0];
                         // Obtener el contenido actual de la tabla
@@ -344,7 +425,7 @@
                         });
                     }
                 },
-                error: function(error) {
+                error: function (error) {
                     console.error('Error al buscar producto:', error);
                     Swal.fire('Error', 'No se pudo buscar el producto', 'error');
                 }
@@ -357,7 +438,7 @@
         // Función para agregar al carrito
         function agregarAlCarrito(producto) {
             const itemExistente = carrito.find(item => item.id === producto.id);
-            
+
             if (itemExistente) {
                 if (itemExistente.cantidad < producto.stock) {
                     itemExistente.cantidad++;
@@ -367,20 +448,23 @@
                 }
             } else {
                 if (producto.stock > 0) {
-                    carrito.push({...producto, cantidad: 1});
+                    carrito.push({
+                        ...producto,
+                        cantidad: 1
+                    });
                 } else {
                     Swal.fire('Advertencia', 'Producto sin stock', 'warning');
                     return;
                 }
             }
-            
+
             actualizarCarritoUI();
         }
 
         // Función para agregar al carrito con precio mayoreo
         function agregarAlCarritoMayoreo(producto) {
             const itemExistente = carrito.find(item => item.id === producto.id);
-            
+
             if (itemExistente) {
                 if (itemExistente.cantidad < producto.stock) {
                     // Reemplazar el precio con el precio de mayoreo y aumentar la cantidad
@@ -403,7 +487,7 @@
                     return;
                 }
             }
-            
+
             actualizarCarritoUI();
         }
 
@@ -424,11 +508,14 @@
         function actualizarCarritoUI() {
             let contenido = '';
             let total = 0;
-            
+
+            // Guardar carrito en localStorage
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+
             carrito.forEach(item => {
                 const subtotal = item.precio * item.cantidad;
                 total += subtotal;
-                
+
                 contenido += `
                     <div class="cart-item">
                         <div class="d-flex justify-content-between align-items-center">
@@ -457,7 +544,7 @@
             const total = parseFloat($('#total').text().replace('$', '')) || 0;
             const dineroRecibido = parseFloat($('#dineroRecibido').val()) || 0;
             const cambio = dineroRecibido - total;
-            
+
             $('#cambio').text(`$${Math.max(0, cambio).toFixed(2)}`);
         }
 
@@ -504,7 +591,8 @@
                     Promise.all(promesasVenta)
                         .then(responses => {
                             // Actualizar estadísticas
-                            const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+                            const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad),
+                                0);
                             totalVentasDia += total;
                             productosVendidosHoy += carrito.reduce((sum, item) => sum + item.cantidad, 0);
                             clientesAtendidosHoy++;
@@ -530,10 +618,15 @@
             $('#productosVendidos').text(productosVendidosHoy);
             $('#clientesAtendidos').text(clientesAtendidosHoy);
             $('#promedioVenta').text(
-                clientesAtendidosHoy > 0 
-                ? `$${(totalVentasDia / clientesAtendidosHoy).toFixed(2)}` 
-                : '$0.00'
+                clientesAtendidosHoy > 0 ?
+                `$${(totalVentasDia / clientesAtendidosHoy).toFixed(2)}` :
+                '$0.00'
             );
+            
+            // Guardar estadísticas en localStorage
+            localStorage.setItem('totalVentasDia', totalVentasDia);
+            localStorage.setItem('productosVendidosHoy', productosVendidosHoy);
+            localStorage.setItem('clientesAtendidosHoy', clientesAtendidosHoy);
         }
 
 
@@ -544,7 +637,7 @@
         }
 
         // Evento para el botón de escanear y procesar código de barras
-        $('#startScanner').click(function() {
+        $('#startScanner').click(function () {
             $('#barcode').focus();
             $(this).html('<i class="fas fa-barcode me-1"></i>Escaneando...');
             setTimeout(() => {
@@ -556,7 +649,7 @@
         let barcodeTimer;
 
         // Evento para procesar el código de barras cuando se ingresa
-        $('#barcode').on('input', function(e) {
+        $('#barcode').on('input', function (e) {
             const $this = $(this);
             const barcode = $this.val();
 
@@ -575,12 +668,13 @@
             }, 100); // Esperar 100ms después de la última entrada
         });
 
-     
+
         // Inicialización
-        $(document).ready(function() {
+        $(document).ready(function () {
             cargarProductos();
             actualizarEstadisticas();
         });
     </script>
 </body>
+
 </html>

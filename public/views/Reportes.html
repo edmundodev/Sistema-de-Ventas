@@ -13,26 +13,18 @@
 </head>
 <body class="bg-white min-h-screen p-6" style="background: linear-gradient(to top right, #f9fafb 0%, #f0fdf4 100%)">
     <div class="max-w-6xl mx-auto" data-aos="fade-up">
-        <!-- Header -->
         <div class="mb-10 text-center">
             <h1 class="text-4xl font-bold text-gray-900 mb-1">📈 Reporte de Ventas</h1>
             <p class="text-gray-600 text-lg">Análisis por categoría en tiempo real</p>
         </div>
 
-        <!-- Card -->
         <div class="bg-white rounded-3xl shadow-lg p-8 border border-gray-200">
-            <!-- Controles -->
             <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <div class="flex gap-3">
-                    <button id="viewBar" class="px-4 py-2 rounded-full bg-green-800 text-white font-medium shadow hover:bg-green-900 transition">
-                        📊 Barras
-                    </button>
-                    <button id="viewPie" class="px-4 py-2 rounded-full bg-green-700 text-white font-medium shadow hover:bg-green-800 transition">
-                        🥧 Circular
-                    </button>
-                    <a href="componentes.html" class="px-4 py-2 rounded-full bg-gray-100 text-gray-800 font-medium shadow hover:bg-gray-200 transition">
-                        🔙 Regresar
-                    </a>
+                    <button id="viewBar" class="px-4 py-2 rounded-full bg-green-800 text-white font-medium shadow hover:bg-green-900 transition">📊 Barras</button>
+                    <button id="viewPie" class="px-4 py-2 rounded-full bg-green-700 text-white font-medium shadow hover:bg-green-800 transition">🥧 Circular</button>
+                    <button id="viewLine" class="px-4 py-2 rounded-full bg-green-600 text-white font-medium shadow hover:bg-green-700 transition">📈 Ventas Semanales</button>
+                    <a href="componentes.html" class="px-4 py-2 rounded-full bg-gray-100 text-gray-800 font-medium shadow hover:bg-gray-200 transition">🔙 Regresar</a>
                 </div>
                 <div class="text-sm text-gray-500 flex items-center gap-2">
                     <span class="animate-spin inline-block w-4 h-4 border-2 border-green-700 border-t-transparent rounded-full"></span>
@@ -40,15 +32,11 @@
                 </div>
             </div>
 
-            <!-- Gráfica -->
-            <div class="bg-gray-50 p-6 rounded-2xl shadow-inner">
-                <canvas id="graficaVentas" class="w-full" style="height: 420px;"></canvas>
+            <div class="bg-gray-50 p-6 rounded-2xl shadow-inner" style="height: 420px;">
+                <canvas id="graficaVentas" class="w-full h-full"></canvas>
             </div>
 
-            <!-- Estadísticas -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 text-center" id="stats">
-                <!-- Se llena dinámicamente -->
-            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 text-center" id="stats"></div>
         </div>
     </div>
 
@@ -61,7 +49,7 @@
         const configuracionBase = {
             plugins: {
                 datalabels: {
-                    color: '#166534', // verde oscuro acento
+                    color: '#166534',
                     font: {
                         weight: 'bold',
                         size: 14
@@ -77,14 +65,14 @@
                             size: 14,
                             family: '"Inter", sans-serif'
                         },
-                        color: '#374151' // gris oscuro
+                        color: '#374151'
                     }
                 },
                 tooltip: {
-                    backgroundColor: '#166534', // verde oscuro acento
-                    titleColor: '#d1fae5', // verde claro para contraste
+                    backgroundColor: '#166534',
+                    titleColor: '#d1fae5',
                     bodyColor: '#d1fae5',
-                    borderColor: '#4ade80', // verde brillante
+                    borderColor: '#4ade80',
                     borderWidth: 1
                 }
             },
@@ -95,12 +83,35 @@
         };
 
         async function obtenerDatos() {
-            const response = await fetch('/proyecto/public/bd/obtener_ventas_categoria.php');
-            const data = await response.json();
-            const categorias = data.map(item => item.categoria);
-            const totales = data.map(item => parseFloat(item.total_ventas));
-            actualizarEstadisticas(data);
-            return { categorias, totales };
+            if (tipoGrafica === 'line') {
+                // Obtener ventas semanales y limitar entre 100 y 2000
+                const response = await fetch('/proyecto/public/bd/registrar_corte_caja.php');
+                const data = await response.json();
+                if (data.success) {
+                    const fechas = data.ventas_semana.map(item => {
+                        const fecha = new Date(item.fecha);
+                        return fecha.toLocaleDateString('es-ES', { weekday: 'long' });
+                    });
+
+                    const totales = data.ventas_semana.map(item => {
+                        let valor = parseFloat(item.total_ventas);
+                        if (valor < 100) valor = 100;
+                        else if (valor > 2000) valor = 2000;
+                        return valor;
+                    });
+
+                    return { categorias: fechas, totales };
+                }
+                return { categorias: [], totales: [] };
+            } else {
+                // Para bar y pie charts: ventas por categoría
+                const response = await fetch('/proyecto/public/bd/obtener_ventas_categoria.php');
+                const data = await response.json();
+                const categorias = data.map(item => item.categoria);
+                const totales = data.map(item => parseFloat(item.total_ventas));
+                actualizarEstadisticas(data);
+                return { categorias, totales };
+            }
         }
 
         function actualizarEstadisticas(data) {
@@ -126,51 +137,73 @@
         async function actualizarGrafico() {
             const { categorias, totales } = await obtenerDatos();
             const colores = [
-                'rgba(22, 101, 52, 0.7)',   // verde oscuro
-                'rgba(34, 139, 69, 0.7)',   // verde medio
-                'rgba(74, 222, 128, 0.7)',  // verde claro
-                'rgba(16, 185, 129, 0.7)',  // verde esmeralda
-                'rgba(22, 101, 52, 0.7)',   // verde oscuro repetido para relleno
-                'rgba(132, 204, 22, 0.7)',  // verde lima claro
-                'rgba(5, 150, 105, 0.7)'    // verde azulado
+                'rgba(22, 101, 52, 0.7)',
+                'rgba(34, 139, 69, 0.7)',
+                'rgba(74, 222, 128, 0.7)',
+                'rgba(16, 185, 129, 0.7)',
+                'rgba(22, 101, 52, 0.7)',
+                'rgba(132, 204, 22, 0.7)',
+                'rgba(5, 150, 105, 0.7)'
             ];
 
-            const config = {
+            let config = {
                 type: tipoGrafica,
                 data: {
                     labels: categorias,
                     datasets: [{
-                        label: 'Ventas por Categoría',
+                        label: tipoGrafica === 'line' ? 'Ventas Diarias' : 'Ventas por Categoría',
                         data: totales,
-                        backgroundColor: colores,
-                        borderColor: colores.map(c => c.replace('0.7', '1')),
-                        borderWidth: 2
+                        backgroundColor: tipoGrafica === 'line' ? 'rgba(22, 101, 52, 0.2)' : colores,
+                        borderColor: tipoGrafica === 'line' ? 'rgba(22, 101, 52, 1)' : colores.map(c => c.replace('0.7', '1')),
+                        borderWidth: tipoGrafica === 'line' ? 3 : 2,
+                        tension: tipoGrafica === 'line' ? 0.3 : 0,
+                        pointRadius: tipoGrafica === 'line' ? 6 : 0,
+                        pointHoverRadius: tipoGrafica === 'line' ? 8 : 0,
+                        pointBackgroundColor: tipoGrafica === 'line' ? '#166534' : undefined,
+                        pointBorderColor: tipoGrafica === 'line' ? '#ffffff' : undefined,
+                        pointBorderWidth: tipoGrafica === 'line' ? 2 : 0,
+                        fill: tipoGrafica === 'line'
                     }]
                 },
                 options: {
                     ...configuracionBase,
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: tipoGrafica === 'bar' ? {
-                        y: {
+                    scales: (tipoGrafica === 'bar' || tipoGrafica === 'line') ? {
+                        y: tipoGrafica === 'line' ? {
+                            beginAtZero: false,
+                            min: 100,
+                            max: 2000,
+                            grid: { color: 'rgba(0,0,0,0.05)' },
+                            ticks: {
+                                stepSize: 100,
+                                callback: value => `$ ${value.toFixed(2)} MXN`,
+                                color: '#374151',
+                                font: { size: 12, family: 'Inter, sans-serif' }
+                            }
+                        } : {
                             beginAtZero: true,
                             grid: { color: 'rgba(0,0,0,0.05)' },
                             ticks: {
-                                callback: value => `S/ ${value.toFixed(2)}`,
-                                color: '#374151', // gris oscuro
+                                callback: value => `$ ${value.toFixed(2)} MXN`,
+                                color: '#374151',
                                 font: { size: 12, family: 'Inter, sans-serif' }
                             }
                         },
                         x: {
                             grid: { display: false },
                             ticks: {
-                                color: '#374151', // gris oscuro
+                                color: '#374151',
                                 font: { size: 12, family: 'Inter, sans-serif' }
                             }
                         }
                     } : {}
                 }
             };
+
+            if (tipoGrafica === 'line') {
+                config.options.plugins.datalabels.display = false;
+            }
 
             if (grafica) grafica.destroy();
             grafica = new Chart(ctx, config);
@@ -183,6 +216,11 @@
 
         document.getElementById('viewPie').addEventListener('click', () => {
             tipoGrafica = 'pie';
+            actualizarGrafico();
+        });
+
+        document.getElementById('viewLine').addEventListener('click', () => {
+            tipoGrafica = 'line';
             actualizarGrafico();
         });
 

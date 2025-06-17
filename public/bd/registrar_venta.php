@@ -45,8 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $total = $precio * $cantidad;
 
-    $stmt = $conn->prepare("INSERT INTO ventas (producto_id, cantidad, total) VALUES (?, ?, ?)");
-    $stmt->bind_param("iid", $producto_id, $cantidad, $total);
+    $fecha = date('Y-m-d');
+    $stmt = $conn->prepare("INSERT INTO ventas (producto_id, usuario_id, cantidad, total, fecha) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("iiids", $producto_id, $usuario_id, $cantidad, $total, $fecha);
     $stmt->execute();
 
     $nuevo_stock = $stock - $cantidad;
