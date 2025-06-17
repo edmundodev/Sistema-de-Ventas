@@ -302,6 +302,11 @@
                         actualizarCarritoUI();
                         actualizarEstadisticas();
 
+                        // Actualizar la visualización de las estadísticas
+                        document.getElementById('totalVentasDia').textContent = '$0.00';
+                        document.getElementById('productosVendidos').textContent = '0';
+                        document.getElementById('clientesAtendidos').textContent = '0';
+
                         Swal.fire({
                             icon: 'success',
                             title: 'Corte de Caja Realizado',
@@ -312,9 +317,6 @@
                         </div>
                     `,
                             confirmButtonColor: '#2c3e50'
-                        }).then(() => {
-                            // Redirigir a la página de reportes para ver la gráfica actualizada
-                            window.location.href = 'Reportes.html';
                         });
                     } else {
                         Swal.fire({
@@ -345,19 +347,15 @@
 
         // Cargar estadísticas al iniciar
         window.addEventListener('load', function() {
+            // Limpiar localStorage y variables globales
+            localStorage.clear();
+            carrito = [];
+            totalVentasDia = 0;
+            productosVendidosHoy = 0;
+            clientesAtendidosHoy = 0;
+            
             actualizarCarritoUI();
             actualizarEstadisticas();
-            // Obtener total de ventas del día desde el servidor
-            fetch('../bd/registrar_corte_caja.php')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        totalVentasDia = parseFloat(data.total_dia) || 0;
-                        localStorage.setItem('totalVentasDia', totalVentasDia);
-                        actualizarEstadisticas();
-                    }
-                })
-                .catch(error => console.error('Error al cargar ventas del día:', error));
         });
 
         // Función para cargar productos (modificada para solo mostrar productos escaneados)
@@ -614,7 +612,9 @@
 
         // Función para actualizar estadísticas
         function actualizarEstadisticas() {
-            $('#totalVentasDia').text(`$${totalVentasDia.toFixed(2)}`);
+            // Formatear el total de ventas con dos decimales
+            const totalFormateado = parseFloat(totalVentasDia).toFixed(2);
+            $('#totalVentasDia').text(`$${totalFormateado}`);
             $('#productosVendidos').text(productosVendidosHoy);
             $('#clientesAtendidos').text(clientesAtendidosHoy);
             $('#promedioVenta').text(
@@ -623,7 +623,7 @@
                 '$0.00'
             );
             
-            // Guardar estadísticas en localStorage
+            // Guardar estadísticas actualizadas en localStorage
             localStorage.setItem('totalVentasDia', totalVentasDia);
             localStorage.setItem('productosVendidosHoy', productosVendidosHoy);
             localStorage.setItem('clientesAtendidosHoy', clientesAtendidosHoy);
@@ -633,7 +633,7 @@
 
         // Función de logout
         function logout() {
-            window.location.href = "/proyecto/public/bd/logout.php";
+            window.location.href = "/proyecto/public/views/login.html";
         }
 
         // Evento para el botón de escanear y procesar código de barras
