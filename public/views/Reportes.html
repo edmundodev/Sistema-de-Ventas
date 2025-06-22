@@ -82,27 +82,23 @@
             }
         };
 
+        // Función para obtener datos de ventas semanales
         async function obtenerDatos() {
             if (tipoGrafica === 'line') {
-                // Obtener ventas semanales y limitar entre 100 y 2000
-                const response = await fetch('/proyecto/public/bd/registrar_corte_caja.php');
-                const data = await response.json();
-                if (data.success) {
-                    const fechas = data.ventas_semana.map(item => {
-                        const fecha = new Date(item.fecha);
-                        return fecha.toLocaleDateString('es-ES', { weekday: 'long' });
-                    });
-
-                    const totales = data.ventas_semana.map(item => {
-                        let valor = parseFloat(item.total_ventas);
-                        if (valor < 100) valor = 100;
-                        else if (valor > 2000) valor = 2000;
-                        return valor;
-                    });
-
-                    return { categorias: fechas, totales };
-                }
-                return { categorias: [], totales: [] };
+                // Obtener ventas semanales del localStorage
+                const ventasSemana = JSON.parse(localStorage.getItem('ventasSemana')) || {};
+                const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+                
+                // Mapear los días y sus ventas, usando 0 si no hay datos
+                const totales = diasSemana.map(dia => {
+                    let valor = ventasSemana[dia] || 0;
+                    // Limitar entre 100 y 2000
+                    if (valor < 100) valor = 100;
+                    else if (valor > 2000) valor = 2000;
+                    return valor;
+                });
+        
+                return { categorias: diasSemana, totales };
             } else {
                 // Para bar y pie charts: ventas por categoría
                 const response = await fetch('/proyecto/public/bd/obtener_ventas_categoria.php');
@@ -117,6 +113,8 @@
         function actualizarEstadisticas(data) {
             const totalVentas = data.reduce((acc, curr) => acc + parseFloat(curr.total_ventas), 0);
             const maxCategoria = data.reduce((a, b) => parseFloat(a.total_ventas) > parseFloat(b.total_ventas) ? a : b);
+            const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+            const diaActual = getDayOfWeek();
 
             document.getElementById('stats').innerHTML = `
                 <div class="p-5 bg-white border border-green-200 rounded-xl shadow">
@@ -128,8 +126,14 @@
                     <p class="text-2xl font-bold text-gray-900 mt-1">${maxCategoria.categoria}</p>
                 </div>
                 <div class="p-5 bg-white border border-green-200 rounded-xl shadow">
-                    <h3 class="text-lg font-semibold text-green-800">📦 Total Categorías</h3>
-                    <p class="text-2xl font-bold text-gray-900 mt-1">${data.length}</p>
+                    <h3 class="text-lg font-semibold text-green-800">📅 Días de la Semana</h3>
+                    <div class="grid grid-cols-7 gap-1 mt-2 text-xs">
+                        ${diasSemana.map(dia => `
+                            <div class="p-1 ${dia === diaActual ? 'bg-green-100 rounded' : ''}">
+                                <span class="block font-semibold ${dia === diaActual ? 'text-green-800' : 'text-gray-600'}">${dia}</span>
+                            </div>
+                        `).join('')}
+                    </div>
                 </div>
             `;
         }
@@ -147,22 +151,19 @@
             ];
 
             let config = {
-                type: tipoGrafica,
+                type: tipoGrafica === 'line' ? 'bar' : tipoGrafica,
                 data: {
                     labels: categorias,
                     datasets: [{
                         label: tipoGrafica === 'line' ? 'Ventas Diarias' : 'Ventas por Categoría',
                         data: totales,
-                        backgroundColor: tipoGrafica === 'line' ? 'rgba(22, 101, 52, 0.2)' : colores,
-                        borderColor: tipoGrafica === 'line' ? 'rgba(22, 101, 52, 1)' : colores.map(c => c.replace('0.7', '1')),
-                        borderWidth: tipoGrafica === 'line' ? 3 : 2,
-                        tension: tipoGrafica === 'line' ? 0.3 : 0,
-                        pointRadius: tipoGrafica === 'line' ? 6 : 0,
-                        pointHoverRadius: tipoGrafica === 'line' ? 8 : 0,
-                        pointBackgroundColor: tipoGrafica === 'line' ? '#166534' : undefined,
-                        pointBorderColor: tipoGrafica === 'line' ? '#ffffff' : undefined,
-                        pointBorderWidth: tipoGrafica === 'line' ? 2 : 0,
-                        fill: tipoGrafica === 'line'
+                        backgroundColor: tipoGrafica === 'line' ? colores : colores,
+                        borderColor: tipoGrafica === 'line' ? colores.map(c => c.replace('0.7', '1')) : colores.map(c => c.replace('0.7', '1')),
+                        borderWidth: 2,
+                        tension: 0,
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                        fill: false
                     }]
                 },
                 options: {
@@ -223,6 +224,15 @@
             tipoGrafica = 'line';
             actualizarGrafico();
         });
+
+        function getDayOfWeek() {
+            const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+            const fecha = new Date();
+            let dia = fecha.getDay();
+            // Ajustar para que la semana comience en lunes (0 = Lunes, 6 = Domingo)
+            dia = dia === 0 ? 6 : dia - 1;
+            return diasSemana[dia];
+        }
 
         AOS.init();
         actualizarGrafico();

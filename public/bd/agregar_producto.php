@@ -32,8 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $precio         = floatval($_POST['precio']);
     $precio_compra  = isset($_POST['precio_compra']) ? floatval($_POST['precio_compra']) : 0;
     $precio_mayoreo = isset($_POST['precio_mayoreo']) ? floatval($_POST['precio_mayoreo']) : 0;
+    $precio_kilo    = isset($_POST['precio_kilo']) ? floatval($_POST['precio_kilo']) : null;
+    $peso_total     = isset($_POST['peso_total']) ? floatval($_POST['peso_total']) : null;
     $stock          = intval($_POST['stock']);
-    $categoria = isset($_POST['categoria']) ? trim($_POST['categoria']) : '';
+    $categoria      = isset($_POST['categoria']) ? trim($_POST['categoria']) : '';
     $codigo_clave   = isset($_POST['codigo_clave']) ? $_POST['codigo_clave'] : '';
 
     // Verificar si el código de barras ya existe
@@ -51,10 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $check_stmt->close();
     }
 
-    $sql = "INSERT INTO productos (barcode, nombre, descripcion, precio, precio_compra, precio_mayoreo, stock, categoria, codigo_clave, usuario_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO productos (barcode, nombre, descripcion, precio, precio_compra, precio_mayoreo, precio_kilo, peso_total, stock, categoria, codigo_clave, usuario_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssdddsssi", $barcode, $nombre, $descripcion, $precio, $precio_compra, $precio_mayoreo, $stock, $categoria, $codigo_clave, $usuario_id);
+    $stmt->bind_param("sssdddddsssi", $barcode, $nombre, $descripcion, $precio, $precio_compra, $precio_mayoreo, $precio_kilo, $peso_total, $stock, $categoria, $codigo_clave, $usuario_id);
     //                      ↑ s=string, d=double, i=integer
 
     if ($stmt->execute()) {

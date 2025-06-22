@@ -30,7 +30,7 @@ if ($barcode) {
     $stmt->bind_param("si", $barcode, $usuario_id);
 } else {
     // Obtener todos los productos
-    $sql = "SELECT id, barcode, nombre, descripcion, precio, precio_compra, precio_mayoreo, stock, categoria, codigo_clave 
+    $sql = "SELECT id, barcode, nombre, descripcion, precio, precio_compra, precio_mayoreo, precio_kilo, peso_total, stock, categoria, codigo_clave 
             FROM productos 
             WHERE usuario_id = ?";
     $stmt = $conn->prepare($sql);

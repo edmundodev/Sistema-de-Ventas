@@ -589,18 +589,47 @@
                     Promise.all(promesasVenta)
                         .then(responses => {
                             // Actualizar estadísticas
-                            const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad),
-                                0);
+                            const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
                             totalVentasDia += total;
                             productosVendidosHoy += carrito.reduce((sum, item) => sum + item.cantidad, 0);
                             clientesAtendidosHoy++;
 
-                            actualizarEstadisticas();
-                            carrito = [];
-                            actualizarCarritoUI();
-                            cargarProductos();
+                            // Generar ticket
+                            fetch('../bd/generar_ticket.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    carrito: carrito,
+                                    total: total,
+                                    dineroRecibido: dineroRecibido,
+                                    cambio: dineroRecibido - total
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Crear una ventana emergente para imprimir
+                                    const ventanaTicket = window.open('', 'Ticket de Venta', 'width=400,height=600');
+                                    ventanaTicket.document.write(data.ticket);
+                                    ventanaTicket.document.close();
+                                    ventanaTicket.print();
+                                    ventanaTicket.close();
 
-                            Swal.fire('¡Éxito!', 'Venta procesada correctamente', 'success');
+                                    // Limpiar carrito y actualizar UI
+                                    actualizarEstadisticas();
+                                    carrito = [];
+                                    actualizarCarritoUI();
+                                    cargarProductos();
+
+                                    Swal.fire('¡Éxito!', 'Venta procesada correctamente', 'success');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error al generar ticket:', error);
+                                Swal.fire('Error', 'No se pudo generar el ticket', 'error');
+                            });
                         })
                         .catch(error => {
                             console.error('Error al procesar la venta:', error);

@@ -4,69 +4,126 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tipos de Productos</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <link rel="icon" type="image/png" href="../css/img/ventasPro.png">
+    <style>
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #0d6efd;
+        }
+    </style>
 </head>
-<body class="bg-gray-50">
-    <section class="py-12 px-4">
-        <div class="max-w-6xl mx-auto">
-            <h1 class="text-4xl font-bold text-center mb-8" data-aos="fade-down">Tipos de Productos que Puedes Agregar</h1>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Producto Ejemplo 1 -->
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden" data-aos="fade-up">
-                    <div class="p-6">
-                        <div class="text-2xl font-bold text-gray-800 mb-2">Electrónicos</div>
-                        <p class="text-gray-600 mb-4">Agrega productos electrónicos como:</p>
-                        <ul class="text-gray-600 list-disc list-inside">
-                            <li>Smartphones</li>
-                            <li>Laptops</li>
-                            <li>Tablets</li>
-                            <li>Accesorios</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Producto Ejemplo 2 -->
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden" data-aos="fade-up" data-aos-delay="100">
-                    <div class="p-6">
-                        <div class="text-2xl font-bold text-gray-800 mb-2">Ropa y Accesorios</div>
-                        <p class="text-gray-600 mb-4">Incluye artículos de moda como:</p>
-                        <ul class="text-gray-600 list-disc list-inside">
-                            <li>Camisetas</li>
-                            <li>Pantalones</li>
-                            <li>Zapatos</li>
-                            <li>Bolsos</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Producto Ejemplo 3 -->
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden" data-aos="fade-up" data-aos-delay="200">
-                    <div class="p-6">
-                        <div class="text-2xl font-bold text-gray-800 mb-2">Hogar y Decoración</div>
-                        <p class="text-gray-600 mb-4">Productos para el hogar como:</p>
-                        <ul class="text-gray-600 list-disc list-inside">
-                            <li>Muebles</li>
-                            <li>Lámparas</li>
-                            <li>Decoración</li>
-                            <li>Utensilios</li>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="display-4 text-center mb-5" data-aos="fade-down">Tipos de Productos que Puedes Agregar</h1>
+        
+        <div class="row g-4">
+            <!-- Producto 1 -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-phone card-icon"></i>
+                        <h3 class="card-title h4 mb-3">Electrónicos</h3>
+                        <p class="card-text text-muted mb-3">Agrega productos electrónicos como:</p>
+                        <ul class="list-unstyled text-muted">
+                            <li class="mb-2">📱 Smartphones</li>
+                            <li class="mb-2">💻 Laptops</li>
+                            <li class="mb-2">📱 Tablets</li>
+                            <li>🎧 Accesorios</li>
                         </ul>
                     </div>
                 </div>
             </div>
 
-            <div class="text-center mt-12" data-aos="fade-up">
-                <p class="text-lg text-gray-600 mb-6">¡Y muchos más tipos de productos que puedes agregar al sistema!</p>
-                <a href="registro.html" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg inline-block transition duration-300">
-                    Comenzar a Agregar Productos
-                </a>
+            <!-- Producto 2 -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-bag card-icon"></i>
+                        <h3 class="card-title h4 mb-3">Ropa y Accesorios</h3>
+                        <p class="card-text text-muted mb-3">Incluye artículos de moda como:</p>
+                        <ul class="list-unstyled text-muted">
+                            <li class="mb-2">👕 Camisetas</li>
+                            <li class="mb-2">👖 Pantalones</li>
+                            <li class="mb-2">👟 Zapatos</li>
+                            <li>👜 Bolsos</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 3 -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-house card-icon"></i>
+                        <h3 class="card-title h4 mb-3">Hogar y Decoración</h3>
+                        <p class="card-text text-muted mb-3">Productos para el hogar como:</p>
+                        <ul class="list-unstyled text-muted">
+                            <li class="mb-2">🛋️ Muebles</li>
+                            <li class="mb-2">💡 Lámparas</li>
+                            <li class="mb-2">🎨 Decoración</li>
+                            <li>🍽️ Utensilios</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 4 -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-capsule card-icon"></i>
+                        <h3 class="card-title h4 mb-3">Farmacia</h3>
+                        <p class="card-text text-muted mb-3">Productos farmacéuticos como:</p>
+                        <ul class="list-unstyled text-muted">
+                            <li class="mb-2">💊 Medicamentos</li>
+                            <li class="mb-2">🏥 Material Curativo</li>
+                            <li class="mb-2">👶 Productos de Bebé</li>
+                            <li>🧴 Cuidado Personal</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 5 -->
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-tools card-icon"></i>
+                        <h3 class="card-title h4 mb-3">Ferretería</h3>
+                        <p class="card-text text-muted mb-3">Herramientas y materiales como:</p>
+                        <ul class="list-unstyled text-muted">
+                            <li class="mb-2">🔧 Herramientas</li>
+                            <li class="mb-2">🔨 Material de Construcción</li>
+                            <li class="mb-2">🔌 Material Eléctrico</li>
+                            <li>🎨 Pinturas y Acabados</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
 
+        <div class="text-center mt-5" data-aos="fade-up">
+            <p class="lead text-muted mb-4">¡Y muchos más tipos de productos que puedes agregar al sistema!</p>
+            <a href="registro.html" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-sm">
+                Comenzar a Agregar Productos
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <script>
         AOS.init({
             duration: 800,
