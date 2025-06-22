@@ -283,11 +283,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function realizarCorteCaja() {
+            const ventasDelDia = totalVentasDia;
             fetch('../bd/registrar_corte_caja.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        const totalDia = parseFloat(data.total_dia) || 0;
                         // Limpiar datos del día
                         localStorage.removeItem('carrito');
                         localStorage.removeItem('totalVentasDia');
@@ -313,7 +313,7 @@
                             html: `
                         <div class="text-left">
                             <p class="mb-2"><strong>Total de Ventas del Día:</strong></p>
-                            <h3 class="text-success mb-3">$${totalDia.toFixed(2)}</h3>
+                            <h3 class="text-success mb-3">$${ventasDelDia.toFixed(2)}</h3>
                         </div>
                     `,
                             confirmButtonColor: '#2c3e50'
@@ -347,12 +347,11 @@
 
         // Cargar estadísticas al iniciar
         window.addEventListener('load', function() {
-            // Limpiar localStorage y variables globales
-            localStorage.clear();
-            carrito = [];
-            totalVentasDia = 0;
-            productosVendidosHoy = 0;
-            clientesAtendidosHoy = 0;
+            // Recuperar datos del localStorage
+            carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            totalVentasDia = parseFloat(localStorage.getItem('totalVentasDia')) || 0;
+            productosVendidosHoy = parseInt(localStorage.getItem('productosVendidosHoy')) || 0;
+            clientesAtendidosHoy = parseInt(localStorage.getItem('clientesAtendidosHoy')) || 0;
             
             actualizarCarritoUI();
             actualizarEstadisticas();
@@ -400,8 +399,11 @@
                                         <button class="btn btn-primary btn-sm me-2" onclick="agregarAlCarrito(${JSON.stringify(producto).replace(/"/g, "'")}); $('#barcode').val('').focus();">
                                             <i class="fas fa-plus me-1"></i>Agregar
                                         </button>
-                                        <button class="btn btn-warning btn-sm" onclick="agregarAlCarritoMayoreo(${JSON.stringify(producto).replace(/"/g, "'")}); $('#barcode').val('').focus();">
+                                        <button class="btn btn-warning btn-sm me-2" onclick="agregarAlCarritoMayoreo(${JSON.stringify(producto).replace(/"/g, "'")}); $('#barcode').val('').focus();">
                                             <i class="fas fa-hand-holding-dollar me-1"></i>Mayoreo
+                                        </button>
+                                        <button class="btn btn-info btn-sm" onclick="pesarProducto(${JSON.stringify(producto).replace(/"/g, "'")}); $('#barcode').val('').focus();">
+                                            <i class="fas fa-weight-scale me-1"></i>Pesar
                                         </button>
                                     </div>
                                 </td>
@@ -697,6 +699,60 @@
             }, 100); // Esperar 100ms después de la última entrada
         });
 
+
+        // Función para pesar productos y calcular precio por peso
+        function pesarProducto(producto) {
+            if (!producto.precio_kilo) {
+                Swal.fire('Error', 'Este producto no tiene precio por kilo configurado', 'error');
+                return;
+            }
+
+            Swal.fire({
+                title: 'Ingresar peso',
+                text: 'Ingrese el peso en gramos:',
+                input: 'number',
+                inputAttributes: {
+                    min: 1,
+                    step: 'any'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Calcular',
+                cancelButtonText: 'Cancelar',
+                inputValidator: (value) => {
+                    if (!value || value <= 0) {
+                        return 'Por favor ingrese un peso válido';
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const pesoGramos = parseFloat(result.value);
+                    const pesoKilos = pesoGramos / 1000;
+                    const precioCalculado = pesoKilos * producto.precio_kilo;
+
+                    // Crear una copia del producto con el precio calculado
+                    const productoConPeso = {
+                        ...producto,
+                        precio: precioCalculado,
+                        descripcion: `${producto.descripcion} (${pesoGramos}g)`,
+                        peso_total: pesoGramos
+                    };
+
+                    // Buscar y eliminar el producto existente del carrito
+                    const itemIndex = carrito.findIndex(item => item.id === producto.id);
+                    if (itemIndex !== -1) {
+                        carrito.splice(itemIndex, 1);
+                    }
+
+                    // Agregar el producto con el nuevo peso
+                    carrito.push({
+                        ...productoConPeso,
+                        cantidad: 1
+                    });
+
+                    actualizarCarritoUI();
+                }
+            });
+        }
 
         // Inicialización
         $(document).ready(function () {

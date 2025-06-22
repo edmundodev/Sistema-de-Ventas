@@ -23,7 +23,7 @@ $barcode = isset($_GET['barcode']) ? $_GET['barcode'] : null;
 
 if ($barcode) {
     // Buscar producto por código de barras
-    $sql = "SELECT id, barcode, nombre, descripcion, precio, precio_compra, precio_mayoreo, stock, categoria, codigo_clave 
+    $sql = "SELECT id, barcode, nombre, descripcion, precio, precio_compra, precio_mayoreo, precio_kilo, peso_total, stock, categoria, codigo_clave 
             FROM productos 
             WHERE barcode = ? AND usuario_id = ?";
     $stmt = $conn->prepare($sql);
