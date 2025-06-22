@@ -23,7 +23,11 @@ $ticket .= "<tr><th style='text-align: left;'>Producto</th><th>Cant</th><th styl
 foreach ($carrito as $item) {
     $subtotal = $item['precio'] * $item['cantidad'];
     $ticket .= "<tr>";
-    $ticket .= "<td style='text-align: left;'>" . $item['nombre'] . "</td>";
+    $nombre = $item['nombre'];
+    if (isset($item['peso_total']) && $item['peso_total'] > 0) {
+        $nombre .= " (" . $item['peso_total'] . "g)";
+    }
+    $ticket .= "<td style='text-align: left;'>" . $nombre . "</td>";
     $ticket .= "<td style='text-align: center;'>" . $item['cantidad'] . "</td>";
     $ticket .= "<td style='text-align: right;'>$" . number_format($item['precio'], 2) . "</td>";
     $ticket .= "<td style='text-align: right;'>$" . number_format($subtotal, 2) . "</td>";
@@ -41,7 +45,7 @@ $ticket .= "<p>Cambio: $" . number_format($cambio, 2) . "</p>";
 $ticket .= "</div>";
 
 $ticket .= "<div style='text-align: center; margin-top: 20px;'>";
-$ticket .= "<p>¡Gracias por su compra!</p>";
+$ticket .= "<p>¡Gracias por su compra vuelva pronto!</p>";
 $ticket .= "</div>";
 $ticket .= "</div>";
 
